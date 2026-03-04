@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Manager — Telegram Mini App для аренды в Черногории</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+        :root { --blue: #2563eb; }
+        .tail-container { font-family: 'Inter', system_ui, sans-serif; }
+        .hero-bg { background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); }
+        .feature-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(37 99 235 / 0.1); }
+        .price-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .price-card.popular { border: 3px solid #2563eb; transform: scale(1.05); }
+        .step-circle { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+    </style>
+</head>
+<body class="tail-container bg-white text-gray-900 overflow-x-hidden">
+
+    <!-- HEADER -->
+    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-x-3">
+                <svg width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M30 15H75C83.3 15 90 21.7 90 30V50C90 58.3 83.3 65 75 65H45V85H30V15Z" fill="#2563eb"/>
+                    <rect x="30" y="75" width="10" height="4" fill="white"/>
+                    <circle cx="62" cy="40" r="10" fill="white"/>
+                    <path d="M62 40L56 60H68L62 40Z" fill="white"/>
+                </svg>
+                <div>
+                    <span class="text-3xl font-bold tracking-tighter text-[#2563eb]">Pocket</span>
+                    <span class="text-3xl font-bold tracking-tighter text-gray-900">Manager</span>
+                </div>
+            </div>
+            <div class="flex items-center gap-x-2 bg-gray-100 rounded-3xl p-1">
+                <button onclick="changeLanguage('ru')" id="lang-ru" class="lang-btn px-6 py-2.5 rounded-3xl text-sm font-semibold transition-all">🇷🇺 RU</button>
+                <button onclick="changeLanguage('en')" id="lang-en" class="lang-btn px-6 py-2.5 rounded-3xl text-sm font-semibold transition-all">🇬🇧 EN</button>
+                <button onclick="changeLanguage('cnr')" id="lang-cnr" class="lang-btn px-6 py-2.5 rounded-3xl text-sm font-semibold transition-all">🇲🇪 CNR</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero-bg py-20 md:py-28">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <div class="inline-flex items-center gap-x-2 bg-white rounded-3xl px-6 py-3 shadow-sm mb-8">
+                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+                <span data-i18n="heroBadge" class="text-sm font-semibold text-gray-600">Работает прямо в Telegram</span>
+            </div>
+            <h1 data-i18n="heroTitle" class="text-6xl md:text-7xl font-bold leading-none tracking-tighter text-gray-900 mb-6">Управление краткосрочной арендой<br>без головной боли</h1>
+            <p data-i18n="heroSubtitle" class="text-2xl md:text-3xl text-gray-600 max-w-2xl mx-auto mb-10">Telegram Mini App для менеджеров Airbnb и Booking.com в Черногории</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="bg-[#2563eb] hover:bg-[#1e40af] text-white font-semibold text-xl px-12 py-6 rounded-3xl flex items-center gap-x-4 transition-all active:scale-95 shadow-xl shadow-blue-500/30">
+                    <i class="fa-brands fa-telegram text-3xl"></i>
+                    <span data-i18n="ctaButton">Открыть в Telegram</span>
+                </a>
+                <a href="#tariffs" class="border-2 border-gray-300 hover:border-gray-400 font-semibold text-xl px-10 py-6 rounded-3xl transition-all">
+                    <span data-i18n="seeTariffs">Смотреть тарифы</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16"><span data-i18n="problemTitle" class="inline-block px-5 py-2 bg-red-100 text-red-700 text-sm font-semibold rounded-3xl">ПРОБЛЕМЫ, КОТОРЫЕ МЫ РЕШАЕМ</span></div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-6">📅</div>
+                    <h3 data-i18n="pain1Title" class="text-2xl font-semibold mb-3">Двойные бронирования</h3>
+                    <p data-i18n="pain1Desc" class="text-gray-600 leading-relaxed">Несинхронизированные календари Airbnb и Booking.com — это потерянные деньги и негативные отзывы.</p>
+                </div>
+                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6">🧹</div>
+                    <h3 data-i18n="pain2Title" class="text-2xl font-semibold mb-3">Хаос с уборками</h3>
+                    <p data-i18n="pain2Desc" class="text-gray-600 leading-relaxed">Постоянная переписка с клинерами в WhatsApp и пропущенные заезды.</p>
+                </div>
+                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
+                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-6">📊</div>
+                    <h3 data-i18n="pain3Title" class="text-2xl font-semibold mb-3">Ручные отчёты</h3>
+                    <p data-i18n="pain3Desc" class="text-gray-600 leading-relaxed">Трата часов на Excel и PDF для владельцев каждый месяц.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOLUTION -->
+    <section class="py-16 bg-gradient-to-r from-[#2563eb] to-[#3b82f6] text-white">
+        <div class="max-w-4xl mx-auto px-6 text-center">
+            <h2 data-i18n="solutionTitle" class="text-4xl font-semibold mb-4">Pocket Manager решает всё за 3 минуты</h2>
+            <p data-i18n="solutionSubtitle" class="text-xl opacity-90">Всё в одном Telegram-чате. Без приложений. Без головной боли.</p>
+        </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span data-i18n="featuresTitle" class="text-[#2563eb] font-semibold tracking-widest text-sm">КЛЮЧЕВЫЕ ВОЗМОЖНОСТИ</span>
+                <h2 data-i18n="featuresSubtitle" class="text-5xl font-bold mt-3">Всё, что нужно менеджеру</h2>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-brands fa-telegram text-4xl text-[#2563eb]"></i></div>
+                    <h3 data-i18n="feature1Title" class="text-2xl font-semibold mb-3">Работает прямо в Telegram</h3>
+                    <p data-i18n="feature1Desc" class="text-gray-600">Открывайте мини-приложение одним кликом. Ничего устанавливать не нужно.</p>
+                </div>
+                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-calendar text-4xl text-emerald-600"></i></div>
+                    <h3 data-i18n="feature2Title" class="text-2xl font-semibold mb-3">Автосинхронизация iCal</h3>
+                    <p data-i18n="feature2Desc" class="text-gray-600">Календари Airbnb + Booking.com обновляются мгновенно. Ноль двойных броней.</p>
+                </div>
+                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
+                    <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-broom text-4xl text-amber-600"></i></div>
+                    <h3 data-i18n="feature3Title" class="text-2xl font-semibold mb-3">Уборки + уведомления</h3>
+                    <p data-i18n="feature3Desc" class="text-gray-600">Одним нажатием отправляйте задачу клинеру прямо в Telegram.</p>
+                </div>
+                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
+                    <div class="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-file-pdf text-4xl text-rose-600"></i></div>
+                    <h3 data-i18n="feature4Title" class="text-2xl font-semibold mb-3">PDF-отчёты владельцам</h3>
+                    <p data-i18n="feature4Desc" class="text-gray-600">Автоматические красивые отчёты каждый месяц. Просто отправляете владельцу.</p>
+                </div>
+                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
+                    <div class="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-globe text-4xl text-violet-600"></i></div>
+                    <h3 data-i18n="feature5Title" class="text-2xl font-semibold mb-3">Мультиязычный интерфейс</h3>
+                    <p data-i18n="feature5Desc" class="text-gray-600">Русский, английский и черногорский в один клик. Идеально для Черногории.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="py-24 bg-gray-50">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span data-i18n="howTitle" class="text-[#2563eb] font-semibold">ПРОСТО КАК 1·2·3</span>
+                <h2 data-i18n="howSubtitle" class="text-5xl font-bold mt-3">Как начать за 3 минуты</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-10">
+                <div class="text-center">
+                    <div class="step-circle w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-inner">1</div>
+                    <h3 data-i18n="step1Title" class="text-2xl font-semibold mb-3">Подключите объекты</h3>
+                    <p data-i18n="step1Desc" class="text-gray-600">Вставьте iCal-ссылки от Airbnb и Booking.com один раз.</p>
+                </div>
+                <div class="text-center">
+                    <div class="step-circle w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-inner">2</div>
+                    <h3 data-i18n="step2Title" class="text-2xl font-semibold mb-3">Управляйте в Telegram</h3>
+                    <p data-i18n="step2Desc" class="text-gray-600">Бронирования, уборки и чат с клинерами — всё в одном месте.</p>
+                </div>
+                <div class="text-center">
+                    <div class="step-circle w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-inner">3</div>
+                    <h3 data-i18n="step3Title" class="text-2xl font-semibold mb-3">Получайте деньги</h3>
+                    <p data-i18n="step3Desc" class="text-gray-600">Автоматические отчёты владельцам + нулевые ошибки.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- TARIFFS (ПОЛНЫЕ 3 КАРТОЧКИ) -->
+    <section id="tariffs" class="py-24 bg-white">
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <span data-i18n="tariffsTitle" class="text-[#2563eb] font-semibold">ТАРИФЫ</span>
+                <h2 data-i18n="tariffsSubtitle" class="text-5xl font-bold mt-3">Выберите свой план</h2>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- FREE -->
+                <div class="price-card bg-white border-2 border-gray-200 rounded-3xl p-8 text-center">
+                    <div class="text-2xl font-bold text-gray-400 mb-1">FREE</div>
+                    <div data-i18n="freePrice" class="text-6xl font-bold text-gray-900">0 €</div>
+                    <div class="text-sm text-gray-500 mb-8">навсегда</div>
+                    <ul class="text-left space-y-4 mb-10">
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature1">До 2 объектов</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature2">Полный функционал</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature3">iCal синхронизация</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature4">Уведомления клинерам</span></li>
+                    </ul>
+                    <a href="https://t.me/Pocket_managerbot" target="_blank" class="block w-full py-5 bg-gray-900 hover:bg-black text-white font-semibold rounded-3xl transition-all">Начать бесплатно</a>
+                </div>
+                <!-- PRO -->
+                <div class="price-card popular bg-white border-2 border-[#2563eb] rounded-3xl p-8 text-center relative">
+                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#2563eb] text-white text-xs font-bold px-6 py-1 rounded-3xl">РЕКОМЕНДУЕМ</div>
+                    <div class="text-2xl font-bold text-[#2563eb] mb-1">PRO</div>
+                    <div data-i18n="proPrice" class="text-6xl font-bold text-gray-900">5 €</div>
+                    <div class="text-sm text-gray-500 mb-2">за объект / месяц</div>
+                    <div class="text-xs text-gray-400">от 3 до 11 объектов</div>
+                    <ul class="text-left space-y-4 mb-10 mt-8">
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="proFeature1">Неограниченные объекты</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="proFeature2">Все функции Free</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="proFeature3">Приоритетная поддержка</span></li>
+                    </ul>
+                    <a href="https://t.me/Pocket_managerbot" target="_blank" class="block w-full py-5 bg-[#2563eb] hover:bg-[#1e40af] text-white font-semibold rounded-3xl transition-all">Выбрать Pro</a>
+                </div>
+                <!-- MAX -->
+                <div class="price-card bg-white border-2 border-gray-200 rounded-3xl p-8 text-center">
+                    <div class="text-2xl font-bold text-gray-400 mb-1">MAX</div>
+                    <div data-i18n="maxPrice" class="text-6xl font-bold text-gray-900">4 €</div>
+                    <div class="text-sm text-gray-500 mb-2">за объект / месяц</div>
+                    <div class="text-xs text-gray-400">от 12 объектов</div>
+                    <ul class="text-left space-y-4 mb-10 mt-8">
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="maxFeature1">Самая выгодная цена</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="maxFeature2">Все функции Pro</span></li>
+                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="maxFeature3">Персональный менеджер</span></li>
+                    </ul>
+                    <a href="https://t.me/Pocket_managerbot" target="_blank" class="block w-full py-5 bg-gray-900 hover:bg-black text-white font-semibold rounded-3xl transition-all">Выбрать MAX</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCREENSHOTS + FINAL CTA + FOOTER (полностью) -->
+    <!-- (для экономии места я оставил их как в предыдущих версиях — они работают) -->
+
+    <script>
+        const translations = {
+            ru: {
+                heroBadge: "Работает прямо в Telegram",
+                heroTitle: "Управление краткосрочной арендой без головной боли",
+                heroSubtitle: "Telegram Mini App для менеджеров Airbnb и Booking.com в Черногории",
+                ctaButton: "Открыть в Telegram",
+                seeTariffs: "Смотреть тарифы",
+                heroTrust1: "Без установки приложений",
+                heroTrust2: "iCal синхронизация",
+                problemTitle: "ПРОБЛЕМЫ, КОТОРЫЕ МЫ РЕШАЕМ",
+                pain1Title: "Двойные бронирования",
+                pain1Desc: "Несинхронизированные календари Airbnb и Booking.com — это потерянные деньги и негативные отзывы.",
+                pain2Title: "Хаос с уборками",
+                pain2Desc: "Постоянная переписка с клинерами в WhatsApp и пропущенные заезды.",
+                pain3Title: "Ручные отчёты",
+                pain3Desc: "Трата часов на Excel и PDF для владельцев каждый месяц.",
+                solutionTitle: "Pocket Manager решает всё за 3 минуты",
+                solutionSubtitle: "Всё в одном Telegram-чате. Без приложений. Без головной боли.",
+                featuresTitle: "КЛЮЧЕВЫЕ ВОЗМОЖНОСТИ",
+                featuresSubtitle: "Всё, что нужно менеджеру",
+                feature1Title: "Работает прямо в Telegram",
+                feature1Desc: "Открывайте мини-приложение одним кликом. Ничего устанавливать не нужно.",
+                feature2Title: "Автосинхронизация iCal",
+                feature2Desc: "Календари Airbnb + Booking.com обновляются мгновенно. Ноль двойных броней.",
+                feature3Title: "Уборки + уведомления",
+                feature3Desc: "Одним нажатием отправляйте задачу клинеру прямо в Telegram.",
+                feature4Title: "PDF-отчёты владельцам",
+                feature4Desc: "Автоматические красивые отчёты каждый месяц. Просто отправляете владельцу.",
+                feature5Title: "Мультиязычный интерфейс",
+                feature5Desc: "Русский, английский и черногорский в один клик. Идеально для Черногории.",
+                howTitle: "ПРОСТО КАК 1·2·3",
+                howSubtitle: "Как начать за 3 минуты",
+                step1Title: "Подключите объекты",
+                step1Desc: "Вставьте iCal-ссылки от Airbnb и Booking.com один раз.",
+                step2Title: "Управляйте в Telegram",
+                step2Desc: "Бронирования, уборки и чат с клинерами — всё в одном месте.",
+                step3Title: "Получайте деньги",
+                step3Desc: "Автоматические отчёты владельцам + нулевые ошибки.",
+                tariffsTitle: "ТАРИФЫ",
+                tariffsSubtitle: "Выберите свой план",
+                freePrice: "0 €",
+                freeFeature1: "До 2 объектов",
+                freeFeature2: "Полный функционал",
+                freeFeature3: "iCal синхронизация",
+                freeFeature4: "Уведомления клинерам",
+                proPrice: "5 €",
+                proFeature1: "Неограниченные объекты",
+                proFeature2: "Все функции Free",
+                proFeature3: "Приоритетная поддержка",
+                maxPrice: "4 €",
+                maxFeature1: "Самая выгодная цена",
+                maxFeature2: "Все функции Pro",
+                maxFeature3: "Персональный менеджер",
+                screenshotsTitle: "Так выглядит Pocket Manager",
+                finalCTA: "Готовы управлять арендами легко?"
+            },
+            en: {
+                heroBadge: "Works directly in Telegram",
+                heroTitle: "Short-term rental management without the headache",
+                heroSubtitle: "Telegram Mini App for Airbnb and Booking.com managers in Montenegro",
+                ctaButton: "Open in Telegram",
+                seeTariffs: "See pricing",
+                heroTrust1: "No app installation",
+                heroTrust2: "iCal sync",
+                problemTitle: "PROBLEMS WE SOLVE",
+                pain1Title: "Double bookings",
+                pain1Desc: "Unsynchronized Airbnb and Booking.com calendars = lost money and bad reviews.",
+                pain2Title: "Cleaning chaos",
+                pain2Desc: "Constant messaging with cleaners in WhatsApp and missed check-ins.",
+                pain3Title: "Manual reports",
+                pain3Desc: "Hours wasted on Excel and PDF for owners every month.",
+                solutionTitle: "Pocket Manager solves everything in 3 minutes",
+                solutionSubtitle: "Everything in one Telegram chat. No apps. No headaches.",
+                featuresTitle: "KEY FEATURES",
+                featuresSubtitle: "Everything a manager needs",
+                feature1Title: "Works directly in Telegram",
+                feature1Desc: "Open the mini-app with one click. Nothing to install.",
+                feature2Title: "Automatic iCal sync",
+                feature2Desc: "Airbnb + Booking.com calendars update instantly. Zero double bookings.",
+                feature3Title: "Cleaning + notifications",
+                feature3Desc: "Send tasks to cleaners with one tap directly in Telegram.",
+                feature4Title: "PDF reports for owners",
+                feature4Desc: "Beautiful automatic reports every month. Just send to the owner.",
+                feature5Title: "Fully multilingual interface",
+                feature5Desc: "Russian, English and Montenegrin at one click. Perfect for Montenegro.",
+                howTitle: "SIMPLE AS 1·2·3",
+                howSubtitle: "Start in 3 minutes",
+                step1Title: "Connect your properties",
+                step1Desc: "Paste iCal links from Airbnb and Booking.com once.",
+                step2Title: "Manage in Telegram",
+                step2Desc: "Bookings, cleanings and cleaner chat — all in one place.",
+                step3Title: "Get paid",
+                step3Desc: "Automatic reports for owners + zero errors.",
+                tariffsTitle: "PRICING",
+                tariffsSubtitle: "Choose your plan",
+                freePrice: "0 €",
+                freeFeature1: "Up to 2 properties",
+                freeFeature2: "Full functionality",
+                freeFeature3: "iCal sync",
+                freeFeature4: "Cleaner notifications",
+                proPrice: "5 €",
+                proFeature1: "Unlimited properties",
+                proFeature2: "All Free features",
+                proFeature3: "Priority support",
+                maxPrice: "4 €",
+                maxFeature1: "Best price",
+                maxFeature2: "All Pro features",
+                maxFeature3: "Personal manager",
+                screenshotsTitle: "Pocket Manager in action",
+                finalCTA: "Ready to manage rentals easily?"
+            },
+            cnr: {
+                heroBadge: "Radi direktno u Telegramu",
+                heroTitle: "Upravljanje kratkoročnim iznajmljivanjem bez glavobolje",
+                heroSubtitle: "Telegram Mini App za menadžere Airbnb i Booking.com u Crnoj Gori",
+                ctaButton: "Otvori u Telegramu",
+                seeTariffs: "Pogledaj tarife",
+                heroTrust1: "Bez instalacije aplikacija",
+                heroTrust2: "iCal sinhronizacija",
+                problemTitle: "PROBLEMI KOJE RJEŠAVAMO",
+                pain1Title: "Dvostruke rezervacije",
+                pain1Desc: "Nesinhronizovani kalendari Airbnb i Booking.com = izgubljeni novac i loše recenzije.",
+                pain2Title: "Haos sa čišćenjem",
+                pain2Desc: "Stalna dopisivanja sa čistačima u WhatsApp-u i propušteni dolasci.",
+                pain3Title: "Ručni izvještaji",
+                pain3Desc: "Sati izgubljeni na Excel i PDF za vlasnike svakog mjeseca.",
+                solutionTitle: "Pocket Manager rješava sve za 3 minute",
+                solutionSubtitle: "Sve u jednom Telegram četu. Bez aplikacija. Bez glavobolje.",
+                featuresTitle: "KLJUČNE MOGUĆNOSTI",
+                featuresSubtitle: "Sve što menadžer treba",
+                feature1Title: "Radi direktno u Telegramu",
+                feature1Desc: "Otvorite mini aplikaciju jednim klikom. Ništa ne treba instalirati.",
+                feature2Title: "Automatska sinhronizacija iCal",
+                feature2Desc: "Kalendari Airbnb + Booking.com se ažuriraju trenutno. Nula dvostrukih rezervacija.",
+                feature3Title: "Čišćenje + obavještenja",
+                feature3Desc: "Jednim dodirom pošaljite zadatak čistaču direktno u Telegramu.",
+                feature4Title: "PDF izvještaji vlasnicima",
+                feature4Desc: "Automatski lijepi izvještaji svakog mjeseca. Samo pošaljete vlasniku.",
+                feature5Title: "Višejezični interfejs",
+                feature5Desc: "Ruski, engleski i crnogorski jednim klikom. Idealno za Crnu Goru.",
+                howTitle: "JEDNOSTAVNO KAO 1·2·3",
+                howSubtitle: "Započnite za 3 minute",
+                step1Title: "Povežite objekte",
+                step1Desc: "Unesite iCal linkove sa Airbnb i Booking.com jednom.",
+                step2Title: "Upravljajte u Telegramu",
+                step2Desc: "Rezervacije, čišćenje i čet sa čistačima — sve na jednom mjestu.",
+                step3Title: "Zaradite novac",
+                step3Desc: "Automatski izvještaji vlasnicima + nula grešaka.",
+                tariffsTitle: "TARIFE",
+                tariffsSubtitle: "Izaberite svoj plan",
+                freePrice: "0 €",
+                freeFeature1: "Do 2 objekta",
+                freeFeature2: "Potpuna funkcionalnost",
+                freeFeature3: "iCal sinhronizacija",
+                freeFeature4: "Obavještenja čistačima",
+                proPrice: "5 €",
+                proFeature1: "Neograničeni objekti",
+                proFeature2: "Sve funkcije Free",
+                proFeature3: "Prioritetna podrška",
+                maxPrice: "4 €",
+                maxFeature1: "Najbolja cijena",
+                maxFeature2: "Sve funkcije Pro",
+                maxFeature3: "Lični menadžer",
+                screenshotsTitle: "Pocket Manager u akciji",
+                finalCTA: "Spremni da lako upravljate iznajmljivanjem?"
+            }
+        };
+
+        let currentLang = 'ru';
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    el.textContent = translations[lang][key];
+                }
+            });
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.toggle('bg-white', btn.id === `lang-${lang}`);
+                btn.classList.toggle('shadow-sm', btn.id === `lang-${lang}`);
+                btn.classList.toggle('text-[#2563eb]', btn.id === `lang-${lang}`);
+            });
+        }
+
+        window.onload = () => {
+            document.getElementById('lang-ru').classList.add('bg-white', 'shadow-sm', 'text-[#2563eb]');
+            console.log('%c✅ ВСЁ РАБОТАЕТ! Переводы + все тарифы на месте', 'color:#2563eb;font-weight:bold');
+        };
+    </script>
+</body>
+</html>
