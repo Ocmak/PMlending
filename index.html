@@ -4,407 +4,949 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pocket Manager — Telegram Mini App для аренды в Черногории</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <meta name="description" content="Управляйте краткосрочной арендой в Telegram. iCal синхронизация каждые 15 минут, автоматические уборки, отчёты для владельцев одним кликом.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
-        :root { --blue: #2563eb; }
-        .tail-container { font-family: 'Inter', system_ui, sans-serif; }
-        .hero-bg { background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%); }
-        .feature-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .feature-card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgb(37 99 235 / 0.1); }
-        .price-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .price-card.popular { border: 3px solid #2563eb; transform: scale(1.05); }
-        .step-circle { background: linear-gradient(135deg, #2563eb, #3b82f6); }
+        /* ===== RESET ===== */
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --blue: #2563eb;
+            --blue-dark: #1d4ed8;
+            --blue-light: #eff6ff;
+            --navy: #0f172a;
+            --slate: #64748b;
+            --border: #e2e8f0;
+            --surface: #f8fafc;
+            --white: #ffffff;
+            --radius-sm: 12px;
+            --radius-md: 20px;
+            --radius-lg: 28px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.08), 0 10px 10px -5px rgba(0,0,0,0.03);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--navy);
+            background: var(--white);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+
+        /* ===== HEADER ===== */
+        header {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+        }
+        .header-inner {
+            display: flex; align-items: center;
+            justify-content: space-between;
+            height: 68px; gap: 16px;
+        }
+        .logo {
+            display: flex; align-items: center; gap: 12px;
+            text-decoration: none; flex-shrink: 0;
+        }
+        .logo-text { font-size: 17px; font-weight: 700; color: var(--navy); letter-spacing: -0.3px; }
+        .lang-switcher {
+            display: flex; align-items: center; gap: 4px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 10px; padding: 4px;
+        }
+        .lang-btn {
+            padding: 5px 10px; border: none; background: transparent;
+            border-radius: 7px; font-size: 13px; font-weight: 600;
+            color: var(--slate); cursor: pointer; transition: all 0.15s; font-family: inherit;
+        }
+        .lang-btn.active { background: var(--white); color: var(--blue); box-shadow: var(--shadow-sm); }
+        .header-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 9px 18px; background: var(--blue); color: white;
+            border: none; border-radius: 10px; font-size: 14px; font-weight: 600;
+            text-decoration: none; cursor: pointer; transition: background 0.15s;
+            white-space: nowrap; font-family: inherit;
+        }
+        .header-cta:hover { background: var(--blue-dark); }
+        @media (max-width: 480px) { .header-cta { display: none; } }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(160deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+            color: white; padding: 100px 0 88px; position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; top: -200px; right: -200px;
+            width: 600px; height: 600px;
+            background: radial-gradient(circle, rgba(59,130,246,0.25) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero::after {
+            content: ''; position: absolute; bottom: -100px; left: -100px;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(37,99,235,0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .hero-inner { position: relative; z-index: 1; text-align: center; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 100px; font-size: 13px; font-weight: 500;
+            color: rgba(255,255,255,0.9); margin-bottom: 32px;
+        }
+        .hero-badge-dot {
+            width: 8px; height: 8px; background: #4ade80;
+            border-radius: 50%; animation: blink 2s infinite;
+        }
+        @keyframes blink { 0%,100% { opacity:1; } 50% { opacity:0.4; } }
+        .hero h1 {
+            font-size: clamp(36px, 6vw, 68px); font-weight: 800;
+            line-height: 1.06; letter-spacing: -2px; margin-bottom: 24px;
+            max-width: 860px; margin-left: auto; margin-right: auto;
+        }
+        .hero h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, #60a5fa, #93c5fd);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .hero-subtitle {
+            font-size: clamp(16px, 2.5vw, 20px); color: rgba(255,255,255,0.7);
+            max-width: 560px; margin: 0 auto 40px; line-height: 1.6;
+        }
+        .hero-actions {
+            display: flex; align-items: center; justify-content: center;
+            gap: 12px; flex-wrap: wrap; margin-bottom: 52px;
+        }
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 16px 28px; background: white; color: var(--navy);
+            border: none; border-radius: var(--radius-sm); font-size: 16px; font-weight: 700;
+            text-decoration: none; cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25); font-family: inherit;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.3); }
+        .btn-ghost {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 16px 28px; background: transparent; color: white;
+            border: 1px solid rgba(255,255,255,0.3); border-radius: var(--radius-sm);
+            font-size: 16px; font-weight: 600; text-decoration: none; cursor: pointer;
+            transition: border-color 0.15s, background 0.15s; font-family: inherit;
+        }
+        .btn-ghost:hover { border-color: rgba(255,255,255,0.6); background: rgba(255,255,255,0.08); }
+        .hero-trust { display: flex; align-items: center; justify-content: center; gap: 28px; flex-wrap: wrap; }
+        .trust-item { display: flex; align-items: center; gap: 8px; font-size: 14px; color: rgba(255,255,255,0.6); }
+        .trust-dot {
+            width: 18px; height: 18px; background: rgba(74,222,128,0.2);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+
+        /* ===== PROBLEMS ===== */
+        .problems { padding: 100px 0; background: var(--white); }
+        .section-label {
+            display: inline-block; font-size: 12px; font-weight: 700;
+            letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
+        }
+        .section-title {
+            font-size: clamp(28px, 4vw, 44px); font-weight: 800;
+            letter-spacing: -1px; line-height: 1.15; margin-bottom: 16px;
+        }
+        .section-subtitle { font-size: 18px; color: var(--slate); max-width: 520px; line-height: 1.6; }
+        .section-header { margin-bottom: 56px; }
+        .section-header.center { text-align: center; }
+        .section-header.center .section-subtitle { margin: 0 auto; }
+        .problems-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        @media (max-width: 768px) { .problems-grid { grid-template-columns: 1fr; } }
+        .problem-card {
+            padding: 32px; border: 1px solid var(--border);
+            border-radius: var(--radius-md); background: var(--surface);
+        }
+        .card-icon {
+            width: 52px; height: 52px; border-radius: var(--radius-sm);
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px; font-size: 24px;
+        }
+        .card-icon.red { background: #fee2e2; }
+        .card-icon.blue { background: var(--blue-light); }
+        .card-icon.green { background: #dcfce7; }
+        .card-icon.purple { background: #f3e8ff; }
+        .card-icon.orange { background: #fff7ed; }
+        .problem-card h3, .feature-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .problem-card p, .feature-card p { font-size: 15px; color: var(--slate); line-height: 1.65; }
+
+        /* ===== SOLUTION BANNER ===== */
+        .solution-banner {
+            background: linear-gradient(135deg, var(--blue) 0%, #1d4ed8 100%);
+            padding: 72px 0; color: white; text-align: center;
+        }
+        .solution-banner h2 {
+            font-size: clamp(24px, 3.5vw, 38px); font-weight: 800;
+            letter-spacing: -0.5px; margin-bottom: 12px;
+        }
+        .solution-banner p { font-size: 18px; opacity: 0.85; }
+
+        /* ===== FEATURES ===== */
+        .features { padding: 100px 0; background: var(--surface); }
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        @media (max-width: 900px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .features-grid { grid-template-columns: 1fr; } }
+        .feature-card {
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: var(--radius-md); padding: 32px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-xl); }
+        .feature-card.wide { grid-column: span 2; }
+        @media (max-width: 560px) { .feature-card.wide { grid-column: span 1; } }
+
+        /* ===== HOW IT WORKS ===== */
+        .how { padding: 100px 0; background: var(--white); }
+        .steps-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 40px; position: relative;
+        }
+        .steps-grid::before {
+            content: ''; position: absolute; top: 32px;
+            left: calc(16.666% + 24px); right: calc(16.666% + 24px);
+            height: 2px; background: #dbeafe; z-index: 0;
+        }
+        @media (max-width: 768px) {
+            .steps-grid { grid-template-columns: 1fr; gap: 32px; }
+            .steps-grid::before { display: none; }
+        }
+        .step { text-align: center; position: relative; z-index: 1; }
+        .step-number {
+            width: 64px; height: 64px;
+            background: linear-gradient(135deg, var(--blue), #3b82f6);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            font-size: 24px; font-weight: 800; color: white; margin: 0 auto 24px;
+            box-shadow: 0 8px 16px rgba(37,99,235,0.35);
+        }
+        .step h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; }
+        .step p { font-size: 15px; color: var(--slate); line-height: 1.65; }
+
+        /* ===== PRICING ===== */
+        .pricing { padding: 100px 0; background: var(--surface); }
+        .pricing-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 24px; align-items: center;
+        }
+        @media (max-width: 768px) {
+            .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+        }
+        .price-card {
+            background: var(--white); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); padding: 36px 32px;
+        }
+        .price-card.featured {
+            border: 2px solid var(--blue); position: relative;
+            box-shadow: 0 0 0 4px rgba(37,99,235,0.08); transform: scale(1.03);
+        }
+        .featured-badge {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: var(--blue); color: white; font-size: 12px; font-weight: 700;
+            padding: 4px 16px; border-radius: 100px; white-space: nowrap;
+        }
+        .plan-name {
+            font-size: 13px; font-weight: 700; letter-spacing: 1.2px;
+            text-transform: uppercase; color: var(--slate); margin-bottom: 8px;
+        }
+        .plan-name.pro { color: var(--blue); }
+        .plan-price { font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 4px; }
+        .plan-period { font-size: 14px; color: var(--slate); margin-bottom: 6px; }
+        .plan-condition { font-size: 12px; color: var(--slate); margin-bottom: 28px; min-height: 18px; }
+        .plan-features { list-style: none; margin-bottom: 32px; display: flex; flex-direction: column; gap: 12px; }
+        .plan-features li { display: flex; align-items: flex-start; gap: 10px; font-size: 15px; }
+        .chk {
+            width: 20px; height: 20px; background: #dcfce7; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px;
+        }
+        .btn-plan {
+            display: block; width: 100%; padding: 14px; text-align: center;
+            border-radius: var(--radius-sm); font-size: 15px; font-weight: 700;
+            text-decoration: none; transition: all 0.15s; border: none; cursor: pointer;
+            font-family: inherit;
+        }
+        .btn-outline { background: transparent; border: 2px solid var(--border); color: var(--navy); }
+        .btn-outline:hover { border-color: var(--navy); }
+        .btn-filled { background: var(--blue); color: white; }
+        .btn-filled:hover { background: var(--blue-dark); }
+
+        /* ===== SCREENSHOTS ===== */
+        .screenshots { padding: 100px 0; background: var(--white); }
+        .phones-row { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; }
+        .phone-wrapper { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+        .phone-label { font-size: 14px; font-weight: 600; color: var(--slate); }
+        .phone-frame {
+            width: 200px; height: 400px; background: #1a1a2e;
+            border-radius: 36px; border: 8px solid #2d2d44; position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.04);
+        }
+        .phone-frame::before {
+            content: ''; position: absolute; top: 14px; left: 50%; transform: translateX(-50%);
+            width: 52px; height: 5px; background: #3a3a5c; border-radius: 3px;
+        }
+        .phone-screen {
+            position: absolute; inset: 0; border-radius: 28px; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; padding: 40px 16px 20px; text-align: center;
+        }
+        .screen-cal  { background: linear-gradient(180deg, #0f172a 0%, #1e3a8a 100%); }
+        .screen-clean { background: linear-gradient(180deg, #0f172a 0%, #065f46 100%); }
+        .screen-rep  { background: linear-gradient(180deg, #0f172a 0%, #4c1d95 100%); }
+        .screen-icon { font-size: 40px; margin-bottom: 14px; opacity: 0.75; }
+        .screen-text { color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.5; }
+
+        /* ===== FINAL CTA ===== */
+        .final-cta {
+            padding: 100px 0;
+            background: linear-gradient(160deg, #0f172a 0%, #1e3a8a 60%, #1d4ed8 100%);
+            color: white; text-align: center;
+        }
+        .final-cta h2 {
+            font-size: clamp(28px, 4vw, 48px); font-weight: 800;
+            letter-spacing: -1px; margin-bottom: 16px;
+        }
+        .final-cta p {
+            font-size: 18px; color: rgba(255,255,255,0.7); margin-bottom: 40px;
+            max-width: 440px; margin-left: auto; margin-right: auto; line-height: 1.6;
+        }
+
+        /* ===== FOOTER ===== */
+        footer { background: var(--navy); color: rgba(255,255,255,0.5); padding: 48px 0; }
+        .footer-inner {
+            display: flex; align-items: center;
+            justify-content: space-between; gap: 24px; flex-wrap: wrap;
+        }
+        .footer-logo {
+            display: flex; align-items: center; gap: 10px;
+            text-decoration: none; color: white;
+        }
+        .footer-logo-text { font-size: 15px; font-weight: 700; }
+        .footer-links { display: flex; gap: 24px; }
+        .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 14px; transition: color 0.15s; }
+        .footer-links a:hover { color: white; }
+        .footer-copy { font-size: 13px; }
+        @media (max-width: 640px) { .footer-inner { flex-direction: column; text-align: center; } }
+
+        /* ===== ANIMATIONS ===== */
+        @media (prefers-reduced-motion: no-preference) {
+            .fade-up { opacity: 0; transform: translateY(24px); transition: opacity 0.55s, transform 0.55s; }
+            .fade-up.visible { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== SVG ICON ===== */
+        .ico { width: 10px; height: 8px; }
     </style>
 </head>
-<body class="tail-container bg-white text-gray-900 overflow-x-hidden">
+<body>
 
-    <!-- HEADER -->
-    <header class="bg-white border-b border-gray-100 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <div class="flex items-center gap-x-3">
-                <svg width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- ================================================ HEADER -->
+<header>
+    <div class="container">
+        <div class="header-inner">
+            <a href="/" class="logo">
+                <svg width="36" height="36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M30 15H75C83.3 15 90 21.7 90 30V50C90 58.3 83.3 65 75 65H45V85H30V15Z" fill="#2563eb"/>
                     <rect x="30" y="75" width="10" height="4" fill="white"/>
                     <circle cx="62" cy="40" r="10" fill="white"/>
                     <path d="M62 40L56 60H68L62 40Z" fill="white"/>
                 </svg>
-                <div>
-                    <span class="text-3xl font-bold tracking-tighter text-[#2563eb]">Pocket</span>
-                    <span class="text-3xl font-bold tracking-tighter text-gray-900">Manager</span>
-                </div>
+                <span class="logo-text">Pocket Manager</span>
+            </a>
+            <div class="lang-switcher">
+                <button class="lang-btn active" id="lang-ru"  onclick="setLang('ru')">RU</button>
+                <button class="lang-btn"        id="lang-en"  onclick="setLang('en')">EN</button>
+                <button class="lang-btn"        id="lang-cnr" onclick="setLang('cnr')">CNR</button>
+                <button class="lang-btn"        id="lang-tr"  onclick="setLang('tr')">TR</button>
             </div>
-            <div class="flex items-center gap-x-2 bg-gray-100 rounded-3xl p-1">
-                <button onclick="changeLanguage('ru')" id="lang-ru" class="lang-btn px-6 py-2.5 rounded-3xl text-sm font-semibold transition-all">🇷🇺 RU</button>
-                <button onclick="changeLanguage('en')" id="lang-en" class="lang-btn px-6 py-2.5 rounded-3xl text-sm font-semibold transition-all">🇬🇧 EN</button>
-                <button onclick="changeLanguage('cnr')" id="lang-cnr" class="lang-btn px-6 py-2.5 rounded-3xl text-sm font-semibold transition-all">🇲🇪 CNR</button>
-            </div>
+            <a href="https://t.me/Pocket_managerbot" target="_blank" class="header-cta">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.474c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.747z"/></svg>
+                <span data-i18n="ctaBtn">Открыть в Telegram</span>
+            </a>
         </div>
-    </header>
+    </div>
+</header>
 
-    <!-- HERO -->
-    <section class="hero-bg py-20 md:py-28">
-        <div class="max-w-5xl mx-auto px-6 text-center">
-            <div class="inline-flex items-center gap-x-2 bg-white rounded-3xl px-6 py-3 shadow-sm mb-8">
-                <div class="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-                <span data-i18n="heroBadge" class="text-sm font-semibold text-gray-600">Работает прямо в Telegram</span>
+<!-- ================================================ HERO -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-inner">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span data-i18n="heroBadge">Работает прямо в Telegram</span>
             </div>
-            <h1 data-i18n="heroTitle" class="text-6xl md:text-7xl font-bold leading-none tracking-tighter text-gray-900 mb-6">Управление краткосрочной арендой<br>без головной боли</h1>
-            <p data-i18n="heroSubtitle" class="text-2xl md:text-3xl text-gray-600 max-w-2xl mx-auto mb-10">Telegram Mini App для менеджеров Airbnb и Booking.com в Черногории</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="https://t.me/Pocket_managerbot" target="_blank" class="bg-[#2563eb] hover:bg-[#1e40af] text-white font-semibold text-xl px-12 py-6 rounded-3xl flex items-center gap-x-4 transition-all active:scale-95 shadow-xl shadow-blue-500/30">
-                    <i class="fa-brands fa-telegram text-3xl"></i>
-                    <span data-i18n="ctaButton">Открыть в Telegram</span>
+            <h1 data-i18n="heroTitle">Больше никаких двойных броней,<br>пропущенных уборок<br>и <em>ручных отчётов</em></h1>
+            <p class="hero-subtitle" data-i18n="heroSub">Telegram Mini App для менеджеров Airbnb и Booking.com в Черногории — всё под контролем в одном месте</p>
+            <div class="hero-actions">
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="#2563eb"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.474c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.747z"/></svg>
+                    <span data-i18n="ctaBtn">Открыть в Telegram</span>
                 </a>
-                <a href="#tariffs" class="border-2 border-gray-300 hover:border-gray-400 font-semibold text-xl px-10 py-6 rounded-3xl transition-all">
-                    <span data-i18n="seeTariffs">Смотреть тарифы</span>
-                </a>
+                <button class="btn-ghost" onclick="document.getElementById('tariffs').scrollIntoView({behavior:'smooth'})">
+                    <span data-i18n="seePricing">Смотреть тарифы</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                </button>
             </div>
-        </div>
-    </section>
-
-    <!-- PROBLEM -->
-    <section class="py-20 bg-white">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-16"><span data-i18n="problemTitle" class="inline-block px-5 py-2 bg-red-100 text-red-700 text-sm font-semibold rounded-3xl">ПРОБЛЕМЫ, КОТОРЫЕ МЫ РЕШАЕМ</span></div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
-                    <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-6">📅</div>
-                    <h3 data-i18n="pain1Title" class="text-2xl font-semibold mb-3">Двойные бронирования</h3>
-                    <p data-i18n="pain1Desc" class="text-gray-600 leading-relaxed">Несинхронизированные календари Airbnb и Booking.com — это потерянные деньги и негативные отзывы.</p>
+            <div class="hero-trust">
+                <div class="trust-item">
+                    <div class="trust-dot"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span data-i18n="trust1">Синхронизация каждые 15 минут</span>
                 </div>
-                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6">🧹</div>
-                    <h3 data-i18n="pain2Title" class="text-2xl font-semibold mb-3">Хаос с уборками</h3>
-                    <p data-i18n="pain2Desc" class="text-gray-600 leading-relaxed">Постоянная переписка с клинерами в WhatsApp и пропущенные заезды.</p>
+                <div class="trust-item">
+                    <div class="trust-dot"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span data-i18n="trust2">Уборщик получает задание автоматически</span>
                 </div>
-                <div class="bg-white border border-gray-100 rounded-3xl p-8 shadow-sm">
-                    <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-3xl mb-6">📊</div>
-                    <h3 data-i18n="pain3Title" class="text-2xl font-semibold mb-3">Ручные отчёты</h3>
-                    <p data-i18n="pain3Desc" class="text-gray-600 leading-relaxed">Трата часов на Excel и PDF для владельцев каждый месяц.</p>
+                <div class="trust-item">
+                    <div class="trust-dot"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#4ade80" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <span data-i18n="trust3">Бесплатно до 2 объектов</span>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- SOLUTION -->
-    <section class="py-16 bg-gradient-to-r from-[#2563eb] to-[#3b82f6] text-white">
-        <div class="max-w-4xl mx-auto px-6 text-center">
-            <h2 data-i18n="solutionTitle" class="text-4xl font-semibold mb-4">Pocket Manager решает всё за 3 минуты</h2>
-            <p data-i18n="solutionSubtitle" class="text-xl opacity-90">Всё в одном Telegram-чате. Без приложений. Без головной боли.</p>
+<!-- ================================================ PROBLEMS -->
+<section class="problems">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label" data-i18n="problemsLabel">Проблемы</span>
+            <h2 class="section-title" data-i18n="problemsTitle">Знакомо?</h2>
+            <p class="section-subtitle" data-i18n="problemsSub">Каждый менеджер аренды сталкивается с этим. Pocket Manager убирает все три проблемы сразу.</p>
         </div>
-    </section>
-
-    <!-- FEATURES -->
-    <section class="py-24 bg-white">
-        <div class="max-w-7xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span data-i18n="featuresTitle" class="text-[#2563eb] font-semibold tracking-widest text-sm">КЛЮЧЕВЫЕ ВОЗМОЖНОСТИ</span>
-                <h2 data-i18n="featuresSubtitle" class="text-5xl font-bold mt-3">Всё, что нужно менеджеру</h2>
+        <div class="problems-grid">
+            <div class="problem-card fade-up">
+                <div class="card-icon red">📅</div>
+                <h3 data-i18n="pain1Title">Двойные бронирования</h3>
+                <p data-i18n="pain1Desc">Гость с Booking.com приезжает — а квартира уже занята. Отмена, штраф, плохой отзыв. Всё из-за несинхронизированного календаря.</p>
             </div>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
-                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-brands fa-telegram text-4xl text-[#2563eb]"></i></div>
-                    <h3 data-i18n="feature1Title" class="text-2xl font-semibold mb-3">Работает прямо в Telegram</h3>
-                    <p data-i18n="feature1Desc" class="text-gray-600">Открывайте мини-приложение одним кликом. Ничего устанавливать не нужно.</p>
-                </div>
-                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
-                    <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-calendar text-4xl text-emerald-600"></i></div>
-                    <h3 data-i18n="feature2Title" class="text-2xl font-semibold mb-3">Автосинхронизация iCal</h3>
-                    <p data-i18n="feature2Desc" class="text-gray-600">Календари Airbnb + Booking.com обновляются мгновенно. Ноль двойных броней.</p>
-                </div>
-                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
-                    <div class="w-14 h-14 bg-amber-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-broom text-4xl text-amber-600"></i></div>
-                    <h3 data-i18n="feature3Title" class="text-2xl font-semibold mb-3">Уборки + уведомления</h3>
-                    <p data-i18n="feature3Desc" class="text-gray-600">Одним нажатием отправляйте задачу клинеру прямо в Telegram.</p>
-                </div>
-                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
-                    <div class="w-14 h-14 bg-rose-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-file-pdf text-4xl text-rose-600"></i></div>
-                    <h3 data-i18n="feature4Title" class="text-2xl font-semibold mb-3">PDF-отчёты владельцам</h3>
-                    <p data-i18n="feature4Desc" class="text-gray-600">Автоматические красивые отчёты каждый месяц. Просто отправляете владельцу.</p>
-                </div>
-                <div class="feature-card bg-white border border-gray-100 rounded-3xl p-8">
-                    <div class="w-14 h-14 bg-violet-100 rounded-2xl flex items-center justify-center mb-6"><i class="fa-solid fa-globe text-4xl text-violet-600"></i></div>
-                    <h3 data-i18n="feature5Title" class="text-2xl font-semibold mb-3">Мультиязычный интерфейс</h3>
-                    <p data-i18n="feature5Desc" class="text-gray-600">Русский, английский и черногорский в один клик. Идеально для Черногории.</p>
-                </div>
+            <div class="problem-card fade-up">
+                <div class="card-icon red">🧹</div>
+                <h3 data-i18n="pain2Title">Хаос с уборками</h3>
+                <p data-i18n="pain2Desc">«Завтра выезд в 11, потом заезд в 14 — успеешь?» — бесконечные переписки в WhatsApp. Уборщик не ответил, гость уже едет.</p>
+            </div>
+            <div class="problem-card fade-up">
+                <div class="card-icon red">📊</div>
+                <h3 data-i18n="pain3Title">Ручные отчёты</h3>
+                <p data-i18n="pain3Desc">Каждый месяц — Excel, считаете доходы вручную, копируете в PDF, отправляете владельцу. Полдня потрачено.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- HOW IT WORKS -->
-    <section class="py-24 bg-gray-50">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span data-i18n="howTitle" class="text-[#2563eb] font-semibold">ПРОСТО КАК 1·2·3</span>
-                <h2 data-i18n="howSubtitle" class="text-5xl font-bold mt-3">Как начать за 3 минуты</h2>
+<!-- ================================================ SOLUTION BANNER -->
+<section class="solution-banner">
+    <div class="container">
+        <h2 data-i18n="solutionTitle">Pocket Manager берёт это на себя — полностью</h2>
+        <p data-i18n="solutionSub">Настройка 10 минут. Дальше всё работает само.</p>
+    </div>
+</section>
+
+<!-- ================================================ FEATURES -->
+<section class="features">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-label" data-i18n="featuresLabel">Возможности</span>
+            <h2 class="section-title" data-i18n="featuresTitle">Что делает Pocket Manager</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card wide fade-up">
+                <div class="card-icon blue">🔄</div>
+                <h3 data-i18n="f1Title">Синхронизация календарей каждые 15 минут</h3>
+                <p data-i18n="f1Desc">Вставляете iCal-ссылки от Airbnb и Booking.com один раз. Дальше Pocket Manager сам забирает обновления каждые 15 минут — новые брони появляются, отменённые исчезают. Двойных броней не бывает.</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-10">
-                <div class="text-center">
-                    <div class="step-circle w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-inner">1</div>
-                    <h3 data-i18n="step1Title" class="text-2xl font-semibold mb-3">Подключите объекты</h3>
-                    <p data-i18n="step1Desc" class="text-gray-600">Вставьте iCal-ссылки от Airbnb и Booking.com один раз.</p>
-                </div>
-                <div class="text-center">
-                    <div class="step-circle w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-inner">2</div>
-                    <h3 data-i18n="step2Title" class="text-2xl font-semibold mb-3">Управляйте в Telegram</h3>
-                    <p data-i18n="step2Desc" class="text-gray-600">Бронирования, уборки и чат с клинерами — всё в одном месте.</p>
-                </div>
-                <div class="text-center">
-                    <div class="step-circle w-16 h-16 mx-auto rounded-2xl flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-inner">3</div>
-                    <h3 data-i18n="step3Title" class="text-2xl font-semibold mb-3">Получайте деньги</h3>
-                    <p data-i18n="step3Desc" class="text-gray-600">Автоматические отчёты владельцам + нулевые ошибки.</p>
-                </div>
+            <div class="feature-card fade-up">
+                <div class="card-icon blue">🧹</div>
+                <h3 data-i18n="f2Title">Уборки без переписки</h3>
+                <p data-i18n="f2Desc">В 08:00 каждого дня уборщик получает задание в Telegram: адрес, время, детали. Сделал — прислал фото. Вы видите статус в реальном времени.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="card-icon purple">📄</div>
+                <h3 data-i18n="f3Title">Отчёты для владельцев</h3>
+                <p data-i18n="f3Desc">Нажимаете кнопку — готов красивый HTML-отчёт с доходами, расходами и уборками. Ссылку можно отправить владельцу: откроется в браузере.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="card-icon orange">💬</div>
+                <h3 data-i18n="f4Title">Всё в Telegram — ничего устанавливать</h3>
+                <p data-i18n="f4Desc">Pocket Manager живёт прямо в Telegram. Открываете мини-приложение одним кликом на любом устройстве.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="card-icon green">🌍</div>
+                <h3 data-i18n="f5Title">Три языка интерфейса</h3>
+                <p data-i18n="f5Desc">Русский, английский и черногорский — переключается мгновенно. Идеально для команд в Черногории.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- TARIFFS (ПОЛНЫЕ 3 КАРТОЧКИ) -->
-    <section id="tariffs" class="py-24 bg-white">
-        <div class="max-w-5xl mx-auto px-6">
-            <div class="text-center mb-16">
-                <span data-i18n="tariffsTitle" class="text-[#2563eb] font-semibold">ТАРИФЫ</span>
-                <h2 data-i18n="tariffsSubtitle" class="text-5xl font-bold mt-3">Выберите свой план</h2>
+<!-- ================================================ HOW IT WORKS -->
+<section class="how">
+    <div class="container">
+        <div class="section-header center">
+            <span class="section-label" data-i18n="howLabel">Старт</span>
+            <h2 class="section-title" data-i18n="howTitle">Три шага до полного порядка</h2>
+        </div>
+        <div class="steps-grid">
+            <div class="step fade-up">
+                <div class="step-number">1</div>
+                <h3 data-i18n="s1Title">Откройте бота и добавьте объекты</h3>
+                <p data-i18n="s1Desc">Вставьте iCal-ссылки от Airbnb и Booking.com. Это займёт меньше 5 минут на каждый объект.</p>
             </div>
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- FREE -->
-                <div class="price-card bg-white border-2 border-gray-200 rounded-3xl p-8 text-center">
-                    <div class="text-2xl font-bold text-gray-400 mb-1">FREE</div>
-                    <div data-i18n="freePrice" class="text-6xl font-bold text-gray-900">0 €</div>
-                    <div class="text-sm text-gray-500 mb-8">навсегда</div>
-                    <ul class="text-left space-y-4 mb-10">
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature1">До 2 объектов</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature2">Полный функционал</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature3">iCal синхронизация</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="freeFeature4">Уведомления клинерам</span></li>
-                    </ul>
-                    <a href="https://t.me/Pocket_managerbot" target="_blank" class="block w-full py-5 bg-gray-900 hover:bg-black text-white font-semibold rounded-3xl transition-all">Начать бесплатно</a>
-                </div>
-                <!-- PRO -->
-                <div class="price-card popular bg-white border-2 border-[#2563eb] rounded-3xl p-8 text-center relative">
-                    <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#2563eb] text-white text-xs font-bold px-6 py-1 rounded-3xl">РЕКОМЕНДУЕМ</div>
-                    <div class="text-2xl font-bold text-[#2563eb] mb-1">PRO</div>
-                    <div data-i18n="proPrice" class="text-6xl font-bold text-gray-900">5 €</div>
-                    <div class="text-sm text-gray-500 mb-2">за объект / месяц</div>
-                    <div class="text-xs text-gray-400">от 3 до 11 объектов</div>
-                    <ul class="text-left space-y-4 mb-10 mt-8">
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="proFeature1">Неограниченные объекты</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="proFeature2">Все функции Free</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="proFeature3">Приоритетная поддержка</span></li>
-                    </ul>
-                    <a href="https://t.me/Pocket_managerbot" target="_blank" class="block w-full py-5 bg-[#2563eb] hover:bg-[#1e40af] text-white font-semibold rounded-3xl transition-all">Выбрать Pro</a>
-                </div>
-                <!-- MAX -->
-                <div class="price-card bg-white border-2 border-gray-200 rounded-3xl p-8 text-center">
-                    <div class="text-2xl font-bold text-gray-400 mb-1">MAX</div>
-                    <div data-i18n="maxPrice" class="text-6xl font-bold text-gray-900">4 €</div>
-                    <div class="text-sm text-gray-500 mb-2">за объект / месяц</div>
-                    <div class="text-xs text-gray-400">от 12 объектов</div>
-                    <ul class="text-left space-y-4 mb-10 mt-8">
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="maxFeature1">Самая выгодная цена</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="maxFeature2">Все функции Pro</span></li>
-                        <li class="flex items-start gap-x-3"><i class="fa-solid fa-check text-green-500 mt-1"></i><span data-i18n="maxFeature3">Персональный менеджер</span></li>
-                    </ul>
-                    <a href="https://t.me/Pocket_managerbot" target="_blank" class="block w-full py-5 bg-gray-900 hover:bg-black text-white font-semibold rounded-3xl transition-all">Выбрать MAX</a>
-                </div>
+            <div class="step fade-up">
+                <div class="step-number">2</div>
+                <h3 data-i18n="s2Title">Подключите уборщика</h3>
+                <p data-i18n="s2Desc">Отправьте уборщику ссылку-приглашение. Он в системе — больше ничего делать не нужно.</p>
+            </div>
+            <div class="step fade-up">
+                <div class="step-number">3</div>
+                <h3 data-i18n="s3Title">Работайте — всё остальное происходит само</h3>
+                <p data-i18n="s3Desc">Брони синхронизируются, уборки назначаются, отчёты формируются. Вы только смотрите.</p>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- SCREENSHOTS + FINAL CTA + FOOTER (полностью) -->
-    <!-- (для экономии места я оставил их как в предыдущих версиях — они работают) -->
+<!-- ================================================ PRICING -->
+<section class="pricing" id="tariffs">
+    <div class="container">
+        <div class="section-header center">
+            <span class="section-label" data-i18n="pricingLabel">Тарифы</span>
+            <h2 class="section-title" data-i18n="pricingTitle">Начните бесплатно</h2>
+            <p class="section-subtitle" data-i18n="pricingSub">Никаких скрытых платежей. Оплата только если захотите масштабироваться.</p>
+        </div>
+        <div class="pricing-grid">
 
-    <script>
-        const translations = {
-            ru: {
-                heroBadge: "Работает прямо в Telegram",
-                heroTitle: "Управление краткосрочной арендой без головной боли",
-                heroSubtitle: "Telegram Mini App для менеджеров Airbnb и Booking.com в Черногории",
-                ctaButton: "Открыть в Telegram",
-                seeTariffs: "Смотреть тарифы",
-                heroTrust1: "Без установки приложений",
-                heroTrust2: "iCal синхронизация",
-                problemTitle: "ПРОБЛЕМЫ, КОТОРЫЕ МЫ РЕШАЕМ",
-                pain1Title: "Двойные бронирования",
-                pain1Desc: "Несинхронизированные календари Airbnb и Booking.com — это потерянные деньги и негативные отзывы.",
-                pain2Title: "Хаос с уборками",
-                pain2Desc: "Постоянная переписка с клинерами в WhatsApp и пропущенные заезды.",
-                pain3Title: "Ручные отчёты",
-                pain3Desc: "Трата часов на Excel и PDF для владельцев каждый месяц.",
-                solutionTitle: "Pocket Manager решает всё за 3 минуты",
-                solutionSubtitle: "Всё в одном Telegram-чате. Без приложений. Без головной боли.",
-                featuresTitle: "КЛЮЧЕВЫЕ ВОЗМОЖНОСТИ",
-                featuresSubtitle: "Всё, что нужно менеджеру",
-                feature1Title: "Работает прямо в Telegram",
-                feature1Desc: "Открывайте мини-приложение одним кликом. Ничего устанавливать не нужно.",
-                feature2Title: "Автосинхронизация iCal",
-                feature2Desc: "Календари Airbnb + Booking.com обновляются мгновенно. Ноль двойных броней.",
-                feature3Title: "Уборки + уведомления",
-                feature3Desc: "Одним нажатием отправляйте задачу клинеру прямо в Telegram.",
-                feature4Title: "PDF-отчёты владельцам",
-                feature4Desc: "Автоматические красивые отчёты каждый месяц. Просто отправляете владельцу.",
-                feature5Title: "Мультиязычный интерфейс",
-                feature5Desc: "Русский, английский и черногорский в один клик. Идеально для Черногории.",
-                howTitle: "ПРОСТО КАК 1·2·3",
-                howSubtitle: "Как начать за 3 минуты",
-                step1Title: "Подключите объекты",
-                step1Desc: "Вставьте iCal-ссылки от Airbnb и Booking.com один раз.",
-                step2Title: "Управляйте в Telegram",
-                step2Desc: "Бронирования, уборки и чат с клинерами — всё в одном месте.",
-                step3Title: "Получайте деньги",
-                step3Desc: "Автоматические отчёты владельцам + нулевые ошибки.",
-                tariffsTitle: "ТАРИФЫ",
-                tariffsSubtitle: "Выберите свой план",
-                freePrice: "0 €",
-                freeFeature1: "До 2 объектов",
-                freeFeature2: "Полный функционал",
-                freeFeature3: "iCal синхронизация",
-                freeFeature4: "Уведомления клинерам",
-                proPrice: "5 €",
-                proFeature1: "Неограниченные объекты",
-                proFeature2: "Все функции Free",
-                proFeature3: "Приоритетная поддержка",
-                maxPrice: "4 €",
-                maxFeature1: "Самая выгодная цена",
-                maxFeature2: "Все функции Pro",
-                maxFeature3: "Персональный менеджер",
-                screenshotsTitle: "Так выглядит Pocket Manager",
-                finalCTA: "Готовы управлять арендами легко?"
-            },
-            en: {
-                heroBadge: "Works directly in Telegram",
-                heroTitle: "Short-term rental management without the headache",
-                heroSubtitle: "Telegram Mini App for Airbnb and Booking.com managers in Montenegro",
-                ctaButton: "Open in Telegram",
-                seeTariffs: "See pricing",
-                heroTrust1: "No app installation",
-                heroTrust2: "iCal sync",
-                problemTitle: "PROBLEMS WE SOLVE",
-                pain1Title: "Double bookings",
-                pain1Desc: "Unsynchronized Airbnb and Booking.com calendars = lost money and bad reviews.",
-                pain2Title: "Cleaning chaos",
-                pain2Desc: "Constant messaging with cleaners in WhatsApp and missed check-ins.",
-                pain3Title: "Manual reports",
-                pain3Desc: "Hours wasted on Excel and PDF for owners every month.",
-                solutionTitle: "Pocket Manager solves everything in 3 minutes",
-                solutionSubtitle: "Everything in one Telegram chat. No apps. No headaches.",
-                featuresTitle: "KEY FEATURES",
-                featuresSubtitle: "Everything a manager needs",
-                feature1Title: "Works directly in Telegram",
-                feature1Desc: "Open the mini-app with one click. Nothing to install.",
-                feature2Title: "Automatic iCal sync",
-                feature2Desc: "Airbnb + Booking.com calendars update instantly. Zero double bookings.",
-                feature3Title: "Cleaning + notifications",
-                feature3Desc: "Send tasks to cleaners with one tap directly in Telegram.",
-                feature4Title: "PDF reports for owners",
-                feature4Desc: "Beautiful automatic reports every month. Just send to the owner.",
-                feature5Title: "Fully multilingual interface",
-                feature5Desc: "Russian, English and Montenegrin at one click. Perfect for Montenegro.",
-                howTitle: "SIMPLE AS 1·2·3",
-                howSubtitle: "Start in 3 minutes",
-                step1Title: "Connect your properties",
-                step1Desc: "Paste iCal links from Airbnb and Booking.com once.",
-                step2Title: "Manage in Telegram",
-                step2Desc: "Bookings, cleanings and cleaner chat — all in one place.",
-                step3Title: "Get paid",
-                step3Desc: "Automatic reports for owners + zero errors.",
-                tariffsTitle: "PRICING",
-                tariffsSubtitle: "Choose your plan",
-                freePrice: "0 €",
-                freeFeature1: "Up to 2 properties",
-                freeFeature2: "Full functionality",
-                freeFeature3: "iCal sync",
-                freeFeature4: "Cleaner notifications",
-                proPrice: "5 €",
-                proFeature1: "Unlimited properties",
-                proFeature2: "All Free features",
-                proFeature3: "Priority support",
-                maxPrice: "4 €",
-                maxFeature1: "Best price",
-                maxFeature2: "All Pro features",
-                maxFeature3: "Personal manager",
-                screenshotsTitle: "Pocket Manager in action",
-                finalCTA: "Ready to manage rentals easily?"
-            },
-            cnr: {
-                heroBadge: "Radi direktno u Telegramu",
-                heroTitle: "Upravljanje kratkoročnim iznajmljivanjem bez glavobolje",
-                heroSubtitle: "Telegram Mini App za menadžere Airbnb i Booking.com u Crnoj Gori",
-                ctaButton: "Otvori u Telegramu",
-                seeTariffs: "Pogledaj tarife",
-                heroTrust1: "Bez instalacije aplikacija",
-                heroTrust2: "iCal sinhronizacija",
-                problemTitle: "PROBLEMI KOJE RJEŠAVAMO",
-                pain1Title: "Dvostruke rezervacije",
-                pain1Desc: "Nesinhronizovani kalendari Airbnb i Booking.com = izgubljeni novac i loše recenzije.",
-                pain2Title: "Haos sa čišćenjem",
-                pain2Desc: "Stalna dopisivanja sa čistačima u WhatsApp-u i propušteni dolasci.",
-                pain3Title: "Ručni izvještaji",
-                pain3Desc: "Sati izgubljeni na Excel i PDF za vlasnike svakog mjeseca.",
-                solutionTitle: "Pocket Manager rješava sve za 3 minute",
-                solutionSubtitle: "Sve u jednom Telegram četu. Bez aplikacija. Bez glavobolje.",
-                featuresTitle: "KLJUČNE MOGUĆNOSTI",
-                featuresSubtitle: "Sve što menadžer treba",
-                feature1Title: "Radi direktno u Telegramu",
-                feature1Desc: "Otvorite mini aplikaciju jednim klikom. Ništa ne treba instalirati.",
-                feature2Title: "Automatska sinhronizacija iCal",
-                feature2Desc: "Kalendari Airbnb + Booking.com se ažuriraju trenutno. Nula dvostrukih rezervacija.",
-                feature3Title: "Čišćenje + obavještenja",
-                feature3Desc: "Jednim dodirom pošaljite zadatak čistaču direktno u Telegramu.",
-                feature4Title: "PDF izvještaji vlasnicima",
-                feature4Desc: "Automatski lijepi izvještaji svakog mjeseca. Samo pošaljete vlasniku.",
-                feature5Title: "Višejezični interfejs",
-                feature5Desc: "Ruski, engleski i crnogorski jednim klikom. Idealno za Crnu Goru.",
-                howTitle: "JEDNOSTAVNO KAO 1·2·3",
-                howSubtitle: "Započnite za 3 minute",
-                step1Title: "Povežite objekte",
-                step1Desc: "Unesite iCal linkove sa Airbnb i Booking.com jednom.",
-                step2Title: "Upravljajte u Telegramu",
-                step2Desc: "Rezervacije, čišćenje i čet sa čistačima — sve na jednom mjestu.",
-                step3Title: "Zaradite novac",
-                step3Desc: "Automatski izvještaji vlasnicima + nula grešaka.",
-                tariffsTitle: "TARIFE",
-                tariffsSubtitle: "Izaberite svoj plan",
-                freePrice: "0 €",
-                freeFeature1: "Do 2 objekta",
-                freeFeature2: "Potpuna funkcionalnost",
-                freeFeature3: "iCal sinhronizacija",
-                freeFeature4: "Obavještenja čistačima",
-                proPrice: "5 €",
-                proFeature1: "Neograničeni objekti",
-                proFeature2: "Sve funkcije Free",
-                proFeature3: "Prioritetna podrška",
-                maxPrice: "4 €",
-                maxFeature1: "Najbolja cijena",
-                maxFeature2: "Sve funkcije Pro",
-                maxFeature3: "Lični menadžer",
-                screenshotsTitle: "Pocket Manager u akciji",
-                finalCTA: "Spremni da lako upravljate iznajmljivanjem?"
-            }
-        };
+            <!-- FREE -->
+            <div class="price-card fade-up">
+                <div class="plan-name">FREE</div>
+                <div class="plan-price" data-i18n="fp">0 €</div>
+                <div class="plan-period" data-i18n="fpPeriod">навсегда</div>
+                <div class="plan-condition">&nbsp;</div>
+                <ul class="plan-features">
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="ff1">До 2 объектов</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="ff2">Полный функционал</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="ff3">iCal синхронизация</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="ff4">Уведомления уборщику</span></li>
+                </ul>
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-outline" data-i18n="fBtn">Начать бесплатно</a>
+            </div>
 
-        let currentLang = 'ru';
+            <!-- PRO -->
+            <div class="price-card featured fade-up">
+                <div class="featured-badge" data-i18n="popularBadge">Популярный</div>
+                <div class="plan-name pro">PRO</div>
+                <div class="plan-price" data-i18n="pp">5 €</div>
+                <div class="plan-period" data-i18n="ppPeriod">за объект / месяц</div>
+                <div class="plan-condition">&nbsp;</div>
+                <ul class="plan-features">
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf1">Неограниченные объекты</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf2">Все функции Free</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf3">Приоритетная поддержка</span></li>
+                </ul>
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-filled" data-i18n="pBtn">Выбрать PRO</a>
+            </div>
 
-        function changeLanguage(lang) {
-            currentLang = lang;
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) {
-                    el.textContent = translations[lang][key];
-                }
-            });
-            document.querySelectorAll('.lang-btn').forEach(btn => {
-                btn.classList.toggle('bg-white', btn.id === `lang-${lang}`);
-                btn.classList.toggle('shadow-sm', btn.id === `lang-${lang}`);
-                btn.classList.toggle('text-[#2563eb]', btn.id === `lang-${lang}`);
-            });
+            <!-- MAX -->
+            <div class="price-card fade-up">
+                <div class="plan-name">MAX</div>
+                <div class="plan-price" data-i18n="mp">4 €</div>
+                <div class="plan-period" data-i18n="mpPeriod">за объект / месяц</div>
+                <div class="plan-condition" data-i18n="mpCond">от 12 объектов</div>
+                <ul class="plan-features">
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="mf1">Самая выгодная цена</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="mf2">Все функции Pro</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="mf3">Персональный менеджер</span></li>
+                </ul>
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-outline" data-i18n="mBtn">Выбрать MAX</a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ================================================ SCREENSHOTS -->
+<section class="screenshots">
+    <div class="container">
+        <div class="section-header center">
+            <span class="section-label" data-i18n="screensLabel">Интерфейс</span>
+            <h2 class="section-title" data-i18n="screensTitle">Так выглядит Pocket Manager</h2>
+            <p class="section-subtitle" data-i18n="screensSub">Три главных экрана — календарь, уборки, финансы. Всё в Telegram.</p>
+        </div>
+        <div class="phones-row">
+            <div class="phone-wrapper fade-up">
+                <div class="phone-frame">
+                    <div class="phone-screen screen-cal">
+                        <div class="screen-icon">📅</div>
+                        <div class="screen-text" data-i18n="scr1">Календарь бронирований</div>
+                    </div>
+                </div>
+                <span class="phone-label" data-i18n="scrL1">Календарь</span>
+            </div>
+            <div class="phone-wrapper fade-up">
+                <div class="phone-frame">
+                    <div class="phone-screen screen-clean">
+                        <div class="screen-icon">🧹</div>
+                        <div class="screen-text" data-i18n="scr2">Уборки и уборщики</div>
+                    </div>
+                </div>
+                <span class="phone-label" data-i18n="scrL2">Уборки</span>
+            </div>
+            <div class="phone-wrapper fade-up">
+                <div class="phone-frame">
+                    <div class="phone-screen screen-rep">
+                        <div class="screen-icon">📄</div>
+                        <div class="screen-text" data-i18n="scr3">Отчёты для владельцев</div>
+                    </div>
+                </div>
+                <span class="phone-label" data-i18n="scrL3">Отчёты</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================================================ FINAL CTA -->
+<section class="final-cta">
+    <div class="container">
+        <h2 data-i18n="ctaTitle">Возьмите аренду под контроль — прямо сейчас</h2>
+        <p data-i18n="ctaDesc">Настройка за 10 минут. Первые 2 объекта бесплатно. Никаких карт.</p>
+        <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-primary">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#2563eb"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.474c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.747z"/></svg>
+            <span data-i18n="ctaBtn">Открыть в Telegram</span>
+        </a>
+    </div>
+</section>
+
+<!-- ================================================ FOOTER -->
+<footer>
+    <div class="container">
+        <div class="footer-inner">
+            <a href="/" class="footer-logo">
+                <svg width="28" height="28" viewBox="0 0 100 100" fill="none"><path d="M30 15H75C83.3 15 90 21.7 90 30V50C90 58.3 83.3 65 75 65H45V85H30V15Z" fill="#2563eb"/><rect x="30" y="75" width="10" height="4" fill="white"/><circle cx="62" cy="40" r="10" fill="white"/><path d="M62 40L56 60H68L62 40Z" fill="white"/></svg>
+                <span class="footer-logo-text">Pocket Manager</span>
+            </a>
+            <div class="footer-links">
+                <a href="https://t.me/Pocket_managerbot" target="_blank" data-i18n="ctaBtn">Открыть в Telegram</a>
+                <a href="https://pocket-manager-production.up.railway.app/privacy" data-i18n="footPrivacy">Конфиденциальность</a>
+            </div>
+            <div class="footer-copy">© 2025 Pocket Manager</div>
+        </div>
+    </div>
+</footer>
+
+<script>
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const T = {
+    ru: {
+        ctaBtn: "Открыть в Telegram",
+        heroBadge: "Работает прямо в Telegram",
+        heroTitle: "Больше никаких двойных броней,<br>пропущенных уборок<br>и <em>ручных отчётов</em>",
+        heroSub: "Telegram Mini App для менеджеров Airbnb и Booking.com в Черногории — всё под контролем в одном месте",
+        seePricing: "Смотреть тарифы",
+        trust1: "Синхронизация каждые 15 минут",
+        trust2: "Уборщик получает задание автоматически",
+        trust3: "Бесплатно до 2 объектов",
+        problemsLabel: "Проблемы",
+        problemsTitle: "Знакомо?",
+        problemsSub: "Каждый менеджер аренды сталкивается с этим. Pocket Manager убирает все три проблемы сразу.",
+        pain1Title: "Двойные бронирования",
+        pain1Desc: "Гость с Booking.com приезжает — а квартира уже занята. Отмена, штраф, плохой отзыв. Всё из-за несинхронизированного календаря.",
+        pain2Title: "Хаос с уборками",
+        pain2Desc: "«Завтра выезд в 11, потом заезд в 14 — успеешь?» — бесконечные переписки в WhatsApp. Уборщик не ответил, гость уже едет.",
+        pain3Title: "Ручные отчёты",
+        pain3Desc: "Каждый месяц — Excel, считаете доходы вручную, копируете в PDF, отправляете владельцу. Полдня потрачено.",
+        solutionTitle: "Pocket Manager берёт это на себя — полностью",
+        solutionSub: "Настройка 10 минут. Дальше всё работает само.",
+        featuresLabel: "Возможности",
+        featuresTitle: "Что делает Pocket Manager",
+        f1Title: "Синхронизация календарей каждые 15 минут",
+        f1Desc: "Вставляете iCal-ссылки от Airbnb и Booking.com один раз. Дальше Pocket Manager сам забирает обновления каждые 15 минут — новые брони появляются, отменённые исчезают. Двойных броней не бывает.",
+        f2Title: "Уборки без переписки",
+        f2Desc: "В 08:00 каждого дня уборщик получает задание в Telegram: адрес, время, детали. Сделал — прислал фото. Вы видите статус в реальном времени.",
+        f3Title: "Отчёты для владельцев",
+        f3Desc: "Нажимаете кнопку — готов красивый HTML-отчёт с доходами, расходами и уборками. Ссылку можно отправить владельцу: откроется в браузере.",
+        f4Title: "Всё в Telegram — ничего устанавливать",
+        f4Desc: "Pocket Manager живёт прямо в Telegram. Открываете мини-приложение одним кликом на любом устройстве.",
+        f5Title: "Три языка интерфейса",
+        f5Desc: "Русский, английский и черногорский — переключается мгновенно. Идеально для команд в Черногории.",
+        howLabel: "Старт",
+        howTitle: "Три шага до полного порядка",
+        s1Title: "Откройте бота и добавьте объекты",
+        s1Desc: "Вставьте iCal-ссылки от Airbnb и Booking.com. Это займёт меньше 5 минут на каждый объект.",
+        s2Title: "Подключите уборщика",
+        s2Desc: "Отправьте уборщику ссылку-приглашение. Он в системе — больше ничего делать не нужно.",
+        s3Title: "Работайте — всё остальное происходит само",
+        s3Desc: "Брони синхронизируются, уборки назначаются, отчёты формируются. Вы только смотрите.",
+        pricingLabel: "Тарифы",
+        pricingTitle: "Начните бесплатно",
+        pricingSub: "Никаких скрытых платежей. Оплата только если захотите масштабироваться.",
+        popularBadge: "Популярный",
+        fp: "0 €", fpPeriod: "навсегда",
+        ff1: "До 2 объектов", ff2: "Полный функционал", ff3: "iCal синхронизация", ff4: "Уведомления уборщику",
+        fBtn: "Начать бесплатно",
+        pp: "5 €", ppPeriod: "за объект / месяц",
+        pf1: "Неограниченные объекты", pf2: "Все функции Free", pf3: "Приоритетная поддержка",
+        pBtn: "Выбрать PRO",
+        mp: "4 €", mpPeriod: "за объект / месяц", mpCond: "от 12 объектов",
+        mf1: "Самая выгодная цена", mf2: "Все функции Pro", mf3: "Персональный менеджер",
+        mBtn: "Выбрать MAX",
+        screensLabel: "Интерфейс",
+        screensTitle: "Так выглядит Pocket Manager",
+        screensSub: "Три главных экрана — календарь, уборки, финансы. Всё в Telegram.",
+        scr1: "Календарь бронирований", scr2: "Уборки и уборщики", scr3: "Отчёты для владельцев",
+        scrL1: "Календарь", scrL2: "Уборки", scrL3: "Отчёты",
+        ctaTitle: "Возьмите аренду под контроль — прямо сейчас",
+        ctaDesc: "Настройка за 10 минут. Первые 2 объекта бесплатно. Никаких карт.",
+        footPrivacy: "Конфиденциальность",
+    },
+    en: {
+        ctaBtn: "Open in Telegram",
+        heroBadge: "Works directly in Telegram",
+        heroTitle: "No more double bookings,<br>missed cleanings<br>or <em>manual reports</em>",
+        heroSub: "Telegram Mini App for Airbnb and Booking.com managers in Montenegro — everything under control in one place",
+        seePricing: "See pricing",
+        trust1: "Calendar sync every 15 minutes",
+        trust2: "Cleaner gets tasks automatically",
+        trust3: "Free for up to 2 properties",
+        problemsLabel: "Problems",
+        problemsTitle: "Sound familiar?",
+        problemsSub: "Every rental manager faces this. Pocket Manager eliminates all three problems at once.",
+        pain1Title: "Double bookings",
+        pain1Desc: "A Booking.com guest arrives — but the apartment is already taken. Cancellation, penalty, bad review. All because of an unsynchronized calendar.",
+        pain2Title: "Cleaning chaos",
+        pain2Desc: "\"Check-out at 11, check-in at 14 — can you make it?\" — endless WhatsApp messages. Cleaner didn't reply, guest is already on the way.",
+        pain3Title: "Manual reports",
+        pain3Desc: "Every month — Excel, manually counting income, copying to PDF, sending to the owner. Half a day wasted.",
+        solutionTitle: "Pocket Manager handles it all — completely",
+        solutionSub: "10-minute setup. Then everything runs itself.",
+        featuresLabel: "Features",
+        featuresTitle: "What Pocket Manager does",
+        f1Title: "Calendar sync every 15 minutes",
+        f1Desc: "Paste iCal links from Airbnb and Booking.com once. Pocket Manager fetches updates every 15 minutes — new bookings appear, cancelled ones disappear. Zero double bookings.",
+        f2Title: "Cleanings without messaging",
+        f2Desc: "At 08:00 every day the cleaner gets a Telegram task: address, time, details. Done — they send a photo. You see the status in real time.",
+        f3Title: "Reports for property owners",
+        f3Desc: "Press a button — a beautiful HTML report with income, expenses and cleanings is ready. Send a link to the owner: opens in any browser.",
+        f4Title: "Everything in Telegram — nothing to install",
+        f4Desc: "Pocket Manager lives right inside Telegram. Open the mini-app with one click on any device.",
+        f5Title: "Three interface languages",
+        f5Desc: "Russian, English and Montenegrin — switch instantly. Perfect for teams in Montenegro.",
+        howLabel: "Getting started",
+        howTitle: "Three steps to full control",
+        s1Title: "Open the bot and add your properties",
+        s1Desc: "Paste iCal links from Airbnb and Booking.com. Takes less than 5 minutes per property.",
+        s2Title: "Connect your cleaner",
+        s2Desc: "Send the cleaner an invite link. They're in the system — nothing more to do.",
+        s3Title: "Work — everything else happens automatically",
+        s3Desc: "Bookings sync, cleanings are assigned, reports are generated. You just watch.",
+        pricingLabel: "Pricing",
+        pricingTitle: "Start for free",
+        pricingSub: "No hidden fees. Pay only when you want to scale.",
+        popularBadge: "Popular",
+        fp: "0 €", fpPeriod: "forever",
+        ff1: "Up to 2 properties", ff2: "Full functionality", ff3: "iCal sync", ff4: "Cleaner notifications",
+        fBtn: "Start for free",
+        pp: "5 €", ppPeriod: "per property / month",
+        pf1: "Unlimited properties", pf2: "All Free features", pf3: "Priority support",
+        pBtn: "Choose PRO",
+        mp: "4 €", mpPeriod: "per property / month", mpCond: "from 12 properties",
+        mf1: "Best price", mf2: "All Pro features", mf3: "Personal manager",
+        mBtn: "Choose MAX",
+        screensLabel: "Interface",
+        screensTitle: "Pocket Manager looks like this",
+        screensSub: "Three main screens — calendar, cleanings, finance. All inside Telegram.",
+        scr1: "Booking calendar", scr2: "Cleanings & cleaners", scr3: "Owner reports",
+        scrL1: "Calendar", scrL2: "Cleanings", scrL3: "Reports",
+        ctaTitle: "Take control of your rentals — right now",
+        ctaDesc: "10-minute setup. First 2 properties free. No credit card.",
+        footPrivacy: "Privacy",
+    },
+    cnr: {
+        ctaBtn: "Otvori u Telegramu",
+        heroBadge: "Radi direktno u Telegramu",
+        heroTitle: "Nema više dvostrukih rezervacija,<br>propuštenih čišćenja<br>ni <em>ručnih izvještaja</em>",
+        heroSub: "Telegram Mini App za menadžere Airbnb i Booking.com u Crnoj Gori — sve pod kontrolom na jednom mjestu",
+        seePricing: "Pogledaj tarife",
+        trust1: "Sinhronizacija svakih 15 minuta",
+        trust2: "Čistač automatski dobija zadatak",
+        trust3: "Besplatno za do 2 objekta",
+        problemsLabel: "Problemi",
+        problemsTitle: "Zvuči poznato?",
+        problemsSub: "Svaki menadžer najma se suočava s ovim. Pocket Manager eliminiše sva tri problema odjednom.",
+        pain1Title: "Dvostruke rezervacije",
+        pain1Desc: "Gost s Booking.com dolazi — a stan je već zauzet. Otkazivanje, kazna, loša recenzija. Sve zbog nesinhronizovanog kalendara.",
+        pain2Title: "Haos sa čišćenjem",
+        pain2Desc: "\"Sutra odjava u 11, pa prijava u 14 — stižeš?\" — beskonačne poruke na WhatsApp-u. Čistač nije odgovorio, gost već putuje.",
+        pain3Title: "Ručni izvještaji",
+        pain3Desc: "Svaki mjesec — Excel, ručno računate prihode, kopirate u PDF, šaljete vlasniku. Pola dana izgubljeno.",
+        solutionTitle: "Pocket Manager preuzima sve — potpuno",
+        solutionSub: "Podešavanje 10 minuta. Dalje sve radi samo.",
+        featuresLabel: "Mogućnosti",
+        featuresTitle: "Šta radi Pocket Manager",
+        f1Title: "Sinhronizacija kalendara svakih 15 minuta",
+        f1Desc: "Unesete iCal linkove sa Airbnb i Booking.com jednom. Pocket Manager sam preuzima ažuriranja svakih 15 minuta — nove rezervacije se pojavljuju, otkazane nestaju. Nula dvostrukih rezervacija.",
+        f2Title: "Čišćenje bez dopisivanja",
+        f2Desc: "U 08:00 svaki dan čistač dobija zadatak u Telegramu: adresa, vrijeme, detalji. Završio — poslao fotografiju. Vi vidite status u realnom vremenu.",
+        f3Title: "Izvještaji za vlasnike",
+        f3Desc: "Pritisnete dugme — spreman je lijep HTML izvještaj s prihodima, rashodima i čišćenjima. Link možete poslati vlasniku: otvara se u browseru.",
+        f4Title: "Sve u Telegramu — ništa za instalirati",
+        f4Desc: "Pocket Manager živi direktno u Telegramu. Otvorite mini aplikaciju jednim klikom na bilo kom uređaju.",
+        f5Title: "Tri jezika interfejsa",
+        f5Desc: "Ruski, engleski i crnogorski — mijenja se trenutno. Idealno za timove u Crnoj Gori.",
+        howLabel: "Početak",
+        howTitle: "Tri koraka do punog reda",
+        s1Title: "Otvorite bota i dodajte objekte",
+        s1Desc: "Unesite iCal linkove sa Airbnb i Booking.com. Traje manje od 5 minuta po objektu.",
+        s2Title: "Povežite čistača",
+        s2Desc: "Pošaljite čistaču link za pozivnicu. On je u sistemu — više ništa ne treba raditi.",
+        s3Title: "Radite — sve ostalo se dešava samo",
+        s3Desc: "Rezervacije se sinhronizuju, čišćenja se dodjeljuju, izvještaji se generišu. Vi samo gledate.",
+        pricingLabel: "Tarife",
+        pricingTitle: "Počnite besplatno",
+        pricingSub: "Bez skrivenih naknada. Plaćanje samo kada želite da se proširite.",
+        popularBadge: "Popularni",
+        fp: "0 €", fpPeriod: "zauvijek",
+        ff1: "Do 2 objekta", ff2: "Potpuna funkcionalnost", ff3: "iCal sinhronizacija", ff4: "Obavještenja čistaču",
+        fBtn: "Počni besplatno",
+        pp: "5 €", ppPeriod: "po objektu / mjesec",
+        pf1: "Neograničeni objekti", pf2: "Sve funkcije Free", pf3: "Prioritetna podrška",
+        pBtn: "Izaberi PRO",
+        mp: "4 €", mpPeriod: "po objektu / mjesec", mpCond: "od 12 objekata",
+        mf1: "Najbolja cijena", mf2: "Sve funkcije Pro", mf3: "Lični menadžer",
+        mBtn: "Izaberi MAX",
+        screensLabel: "Interfejs",
+        screensTitle: "Ovako izgleda Pocket Manager",
+        screensSub: "Tri glavna ekrana — kalendar, čišćenja, finansije. Sve u Telegramu.",
+        scr1: "Kalendar rezervacija", scr2: "Čišćenja i čistači", scr3: "Izvještaji vlasnicima",
+        scrL1: "Kalendar", scrL2: "Čišćenja", scrL3: "Izvještaji",
+        ctaTitle: "Preuzmite kontrolu nad najmom — odmah",
+        ctaDesc: "Podešavanje za 10 minuta. Prva 2 objekta besplatno. Bez kartice.",
+        footPrivacy: "Privatnost",
+    },
+    tr: {
+        ctaBtn: "Telegram'da Aç",
+        heroBadge: "Doğrudan Telegram'da çalışır",
+        heroTitle: "Artık çift rezervasyon yok,<br>kaçırılan temizlik yok<br>ve <em>manuel rapor yok</em>",
+        heroSub: "Karadağ'daki Airbnb ve Booking.com yöneticileri için Telegram Mini Uygulaması — her şey tek bir yerde kontrol altında",
+        seePricing: "Fiyatları Gör",
+        trust1: "Her 15 dakikada bir senkronizasyon",
+        trust2: "Temizlikçi görevi otomatik alır",
+        trust3: "2 mülke kadar ücretsiz",
+        problemsLabel: "Sorunlar",
+        problemsTitle: "Tanıdık geldi mi?",
+        problemsSub: "Her kiralama yöneticisi bununla karşılaşır. Pocket Manager üç sorunu birden ortadan kaldırır.",
+        pain1Title: "Çift rezervasyonlar",
+        pain1Desc: "Booking.com'dan gelen misafir geliyor — ama daire zaten dolu. İptal, ceza, kötü yorum. Hepsi senkronize edilmemiş bir takvim yüzünden.",
+        pain2Title: "Temizlik kaos",
+        pain2Desc: "\"Yarın çıkış 11'de, giriş 14'te — yetişebilir misin?\" — WhatsApp'ta bitmek bilmeyen mesajlar. Temizlikçi cevap vermedi, misafir yolda.",
+        pain3Title: "Manuel raporlar",
+        pain3Desc: "Her ay — Excel, gelirleri manuel hesaplama, PDF'e kopyalama, sahibe gönderme. Yarım gün harcandı.",
+        solutionTitle: "Pocket Manager her şeyi üstlenir — tamamen",
+        solutionSub: "10 dakikalık kurulum. Sonra her şey kendiliğinden çalışır.",
+        featuresLabel: "Özellikler",
+        featuresTitle: "Pocket Manager ne yapar",
+        f1Title: "Her 15 dakikada bir takvim senkronizasyonu",
+        f1Desc: "Airbnb ve Booking.com'dan iCal bağlantılarını bir kez yapıştırın. Pocket Manager her 15 dakikada güncellemeleri alır — yeni rezervasyonlar gelir, iptal edilenler kaybolur. Sıfır çift rezervasyon.",
+        f2Title: "Yazışmasız temizlik",
+        f2Desc: "Her gün 08:00'de temizlikçi Telegram'da görevi alır: adres, saat, detaylar. Bitti — fotoğraf gönderdi. Durumu gerçek zamanlı görürsünüz.",
+        f3Title: "Mülk sahiplerine raporlar",
+        f3Desc: "Butona basın — gelir, gider ve temizlikleri içeren güzel bir HTML raporu hazır. Linki sahibe gönderin: tarayıcıda açılır.",
+        f4Title: "Her şey Telegram'da — kurulum yok",
+        f4Desc: "Pocket Manager doğrudan Telegram'da yaşar. Mini uygulamayı herhangi bir cihazda tek tıkla açın.",
+        f5Title: "Üç arayüz dili",
+        f5Desc: "Rusça, İngilizce ve Karadağca — anında geçiş. Karadağ'daki ekipler için mükemmel.",
+        howLabel: "Başlangıç",
+        howTitle: "Tam kontrole üç adım",
+        s1Title: "Botu açın ve mülklerinizi ekleyin",
+        s1Desc: "Airbnb ve Booking.com'dan iCal bağlantılarını yapıştırın. Her mülk için 5 dakikadan az sürer.",
+        s2Title: "Temizlikçinizi bağlayın",
+        s2Desc: "Temizlikçiye davet linki gönderin. Sistemde — başka hiçbir şey yapmak gerekmez.",
+        s3Title: "Çalışın — geri kalanı kendiliğinden olur",
+        s3Desc: "Rezervasyonlar senkronize edilir, temizlikler atanır, raporlar oluşturulur. Siz sadece izleyin.",
+        pricingLabel: "Fiyatlandırma",
+        pricingTitle: "Ücretsiz başlayın",
+        pricingSub: "Gizli ücret yok. Sadece ölçeklendirmek istediğinizde ödeyin.",
+        popularBadge: "Popüler",
+        fp: "0 €", fpPeriod: "sonsuza kadar",
+        ff1: "2 mülke kadar", ff2: "Tam işlevsellik", ff3: "iCal senkronizasyonu", ff4: "Temizlikçi bildirimleri",
+        fBtn: "Ücretsiz başla",
+        pp: "5 €", ppPeriod: "mülk başına / ay",
+        pf1: "Sınırsız mülk", pf2: "Tüm Free özellikleri", pf3: "Öncelikli destek",
+        pBtn: "PRO seç",
+        mp: "4 €", mpPeriod: "mülk başına / ay", mpCond: "12+ mülkten itibaren",
+        mf1: "En iyi fiyat", mf2: "Tüm Pro özellikleri", mf3: "Kişisel yönetici",
+        mBtn: "MAX seç",
+        screensLabel: "Arayüz",
+        screensTitle: "Pocket Manager böyle görünür",
+        screensSub: "Üç ana ekran — takvim, temizlikler, finans. Hepsi Telegram'da.",
+        scr1: "Rezervasyon takvimi", scr2: "Temizlikler ve temizlikçiler", scr3: "Sahip raporları",
+        scrL1: "Takvim", scrL2: "Temizlikler", scrL3: "Raporlar",
+        ctaTitle: "Kiralamanızın kontrolünü alın — hemen şimdi",
+        ctaDesc: "10 dakikalık kurulum. İlk 2 mülk ücretsiz. Kart gerekmez.",
+        footPrivacy: "Gizlilik",
+    }
+};
+
+// ============================================================
+// Keys that contain HTML (use innerHTML)
+// ============================================================
+const HTML_KEYS = new Set(['heroTitle']);
+
+// ============================================================
+// setLang
+// ============================================================
+function setLang(lang) {
+    const dict = T[lang];
+    if (!dict) return;
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (dict[key] == null) return;
+        if (HTML_KEYS.has(key)) {
+            el.innerHTML = dict[key];
+        } else {
+            el.textContent = dict[key];
         }
+    });
 
-        window.onload = () => {
-            document.getElementById('lang-ru').classList.add('bg-white', 'shadow-sm', 'text-[#2563eb]');
-            console.log('%c✅ ВСЁ РАБОТАЕТ! Переводы + все тарифы на месте', 'color:#2563eb;font-weight:bold');
-        };
-    </script>
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `lang-${lang}`);
+    });
+
+    document.documentElement.lang = lang === 'cnr' ? 'sr' : lang;
+}
+
+// ============================================================
+// Scroll animations
+// ============================================================
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ============================================================
+// Init — detect browser language
+// ============================================================
+(function init() {
+    const nav = (navigator.language || '').toLowerCase();
+    let lang = 'ru';
+    if (nav.startsWith('tr')) lang = 'tr';
+    else if (nav.startsWith('en')) lang = 'en';
+    else if (nav.startsWith('hr') || nav.startsWith('sr') || nav.startsWith('bs') || nav.startsWith('me')) lang = 'cnr';
+    setLang(lang);
+})();
+</script>
 </body>
 </html>
