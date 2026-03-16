@@ -333,9 +333,12 @@
             text-decoration: none; color: white;
         }
         .footer-logo-text { font-size: 15px; font-weight: 700; }
-        .footer-links { display: flex; gap: 24px; }
+        .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
         .footer-links a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 14px; transition: color 0.15s; }
         .footer-links a:hover { color: white; }
+        .footer-contact { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; }
+        .footer-contact a { color: rgba(255,255,255,0.5); text-decoration: none; font-size: 14px; transition: color 0.15s; display: flex; align-items: center; gap: 6px; }
+        .footer-contact a:hover { color: white; }
         .footer-copy { font-size: 13px; }
         @media (max-width: 640px) { .footer-inner { flex-direction: column; text-align: center; } }
 
@@ -638,7 +641,17 @@
                 <a href="https://t.me/Pocket_managerbot" target="_blank" data-i18n="ctaBtn">Открыть в Telegram</a>
                 <a href="https://pocket-manager-production.up.railway.app/privacy" data-i18n="footPrivacy">Конфиденциальность</a>
             </div>
-            <div class="footer-copy">© 2025 Pocket Manager</div>
+            <div class="footer-contact">
+                <a href="https://t.me/Osmakov_av" target="_blank">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.474c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.747z"/></svg>
+                    @Osmakov_av
+                </a>
+                <a href="tel:+38267851373">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.68A2 2 0 012 .9h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                    +382 67 851 373
+                </a>
+            </div>
+            <div class="footer-copy">© 2026 Pocket Manager</div>
         </div>
     </div>
 </footer>
