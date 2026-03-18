@@ -238,10 +238,13 @@
         /* ===== PRICING ===== */
         .pricing { padding: 100px 0; background: var(--surface); }
         .pricing-grid {
-            display: grid; grid-template-columns: repeat(3, 1fr);
+            display: grid; grid-template-columns: repeat(4, 1fr);
             gap: 24px; align-items: center;
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
+            .pricing-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 560px) {
             .pricing-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
         }
         .price-card {
@@ -261,7 +264,9 @@
             font-size: 13px; font-weight: 700; letter-spacing: 1.2px;
             text-transform: uppercase; color: var(--slate); margin-bottom: 8px;
         }
+        .plan-name.starter { color: #7c3aed; }
         .plan-name.pro { color: var(--blue); }
+        .plan-name.unlimited { color: #d97706; }
         .plan-price { font-size: 52px; font-weight: 800; letter-spacing: -2px; line-height: 1; margin-bottom: 4px; }
         .plan-period { font-size: 14px; color: var(--slate); margin-bottom: 6px; }
         .plan-condition { font-size: 12px; color: var(--slate); margin-bottom: 28px; min-height: 18px; }
@@ -544,33 +549,50 @@
                 <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-outline" data-i18n="fBtn">Начать бесплатно</a>
             </div>
 
+            <!-- STARTER -->
+            <div class="price-card fade-up">
+                <div class="plan-name starter">✨ STARTER</div>
+                <div class="plan-price" data-i18n="sp">25 €</div>
+                <div class="plan-period" data-i18n="spPeriod">в месяц</div>
+                <div class="plan-condition" data-i18n="spCond">до 5 объектов</div>
+                <ul class="plan-features">
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="sf1">До 5 объектов</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="sf2">Все функции Free</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="sf3">Отчёты для владельцев</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="sf4">Excel экспорт</span></li>
+                </ul>
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-outline" data-i18n="sBtn">Выбрать Starter</a>
+            </div>
+
             <!-- PRO -->
             <div class="price-card featured fade-up">
                 <div class="featured-badge" data-i18n="popularBadge">Популярный</div>
-                <div class="plan-name pro">PRO</div>
-                <div class="plan-price" data-i18n="pp">5 €</div>
-                <div class="plan-period" data-i18n="ppPeriod">за объект / месяц</div>
-                <div class="plan-condition">&nbsp;</div>
+                <div class="plan-name pro">🚀 PRO</div>
+                <div class="plan-price" data-i18n="pp">49 €</div>
+                <div class="plan-period" data-i18n="ppPeriod">в месяц</div>
+                <div class="plan-condition" data-i18n="ppCond">до 12 объектов</div>
                 <ul class="plan-features">
-                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf1">Неограниченные объекты</span></li>
-                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf2">Все функции Free</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf1">До 12 объектов</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf2">Все функции Starter</span></li>
                     <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf3">Приоритетная поддержка</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="pf4">4 € / объект</span></li>
                 </ul>
                 <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-filled" data-i18n="pBtn">Выбрать PRO</a>
             </div>
 
-            <!-- MAX -->
+            <!-- UNLIMITED -->
             <div class="price-card fade-up">
-                <div class="plan-name">MAX</div>
-                <div class="plan-price" data-i18n="mp">4 €</div>
-                <div class="plan-period" data-i18n="mpPeriod">за объект / месяц</div>
-                <div class="plan-condition" data-i18n="mpCond">от 12 объектов</div>
+                <div class="plan-name unlimited">⭐ UNLIMITED</div>
+                <div class="plan-price" data-i18n="up">89 €</div>
+                <div class="plan-period" data-i18n="upPeriod">в месяц</div>
+                <div class="plan-condition" data-i18n="upCond">неограниченно</div>
                 <ul class="plan-features">
-                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="mf1">Самая выгодная цена</span></li>
-                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="mf2">Все функции Pro</span></li>
-                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="mf3">Персональный менеджер</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="uf1">Неограниченные объекты</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="uf2">Все функции Pro</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="uf3">Самая низкая цена за объект</span></li>
+                    <li><span class="chk"><svg class="ico" viewBox="0 0 10 8" fill="none"><path d="M1 4l3 3 5-6" stroke="#22c55e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span data-i18n="uf4">Персональный менеджер</span></li>
                 </ul>
-                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-outline" data-i18n="mBtn">Выбрать MAX</a>
+                <a href="https://t.me/Pocket_managerbot" target="_blank" class="btn-plan btn-outline" data-i18n="uBtn">Выбрать Unlimited</a>
             </div>
 
         </div>
@@ -708,12 +730,15 @@ const T = {
         fp: "0 €", fpPeriod: "навсегда",
         ff1: "До 2 объектов", ff2: "Полный функционал", ff3: "iCal синхронизация", ff4: "Уведомления уборщику",
         fBtn: "Начать бесплатно",
-        pp: "5 €", ppPeriod: "за объект / месяц",
-        pf1: "Неограниченные объекты", pf2: "Все функции Free", pf3: "Приоритетная поддержка",
+        sp: "25 €", spPeriod: "в месяц", spCond: "до 5 объектов",
+        sf1: "До 5 объектов", sf2: "Все функции Free", sf3: "Отчёты для владельцев", sf4: "Excel экспорт",
+        sBtn: "Выбрать Starter",
+        pp: "49 €", ppPeriod: "в месяц", ppCond: "до 12 объектов",
+        pf1: "До 12 объектов", pf2: "Все функции Starter", pf3: "Приоритетная поддержка", pf4: "4 € / объект",
         pBtn: "Выбрать PRO",
-        mp: "4 €", mpPeriod: "за объект / месяц", mpCond: "от 12 объектов",
-        mf1: "Самая выгодная цена", mf2: "Все функции Pro", mf3: "Персональный менеджер",
-        mBtn: "Выбрать MAX",
+        up: "89 €", upPeriod: "в месяц", upCond: "неограниченно",
+        uf1: "Неограниченные объекты", uf2: "Все функции Pro", uf3: "Самая низкая цена за объект", uf4: "Персональный менеджер",
+        uBtn: "Выбрать Unlimited",
         screensLabel: "Интерфейс",
         screensTitle: "Так выглядит Pocket Manager",
         screensSub: "Три главных экрана — календарь, уборки, финансы. Всё в Telegram.",
@@ -770,12 +795,15 @@ const T = {
         fp: "0 €", fpPeriod: "forever",
         ff1: "Up to 2 properties", ff2: "Full functionality", ff3: "iCal sync", ff4: "Cleaner notifications",
         fBtn: "Start for free",
-        pp: "5 €", ppPeriod: "per property / month",
-        pf1: "Unlimited properties", pf2: "All Free features", pf3: "Priority support",
+        sp: "25 €", spPeriod: "per month", spCond: "up to 5 properties",
+        sf1: "Up to 5 properties", sf2: "All Free features", sf3: "Owner reports", sf4: "Excel export",
+        sBtn: "Choose Starter",
+        pp: "49 €", ppPeriod: "per month", ppCond: "up to 12 properties",
+        pf1: "Up to 12 properties", pf2: "All Starter features", pf3: "Priority support", pf4: "€4 / property",
         pBtn: "Choose PRO",
-        mp: "4 €", mpPeriod: "per property / month", mpCond: "from 12 properties",
-        mf1: "Best price", mf2: "All Pro features", mf3: "Personal manager",
-        mBtn: "Choose MAX",
+        up: "89 €", upPeriod: "per month", upCond: "unlimited",
+        uf1: "Unlimited properties", uf2: "All Pro features", uf3: "Lowest cost per property", uf4: "Personal manager",
+        uBtn: "Choose Unlimited",
         screensLabel: "Interface",
         screensTitle: "Pocket Manager looks like this",
         screensSub: "Three main screens — calendar, cleanings, finance. All inside Telegram.",
@@ -832,12 +860,15 @@ const T = {
         fp: "0 €", fpPeriod: "zauvijek",
         ff1: "Do 2 objekta", ff2: "Potpuna funkcionalnost", ff3: "iCal sinhronizacija", ff4: "Obavještenja čistaču",
         fBtn: "Počni besplatno",
-        pp: "5 €", ppPeriod: "po objektu / mjesec",
-        pf1: "Neograničeni objekti", pf2: "Sve funkcije Free", pf3: "Prioritetna podrška",
+        sp: "25 €", spPeriod: "mjesečno", spCond: "do 5 objekata",
+        sf1: "Do 5 objekata", sf2: "Sve funkcije Free", sf3: "Izvještaji za vlasnike", sf4: "Excel izvoz",
+        sBtn: "Izaberi Starter",
+        pp: "49 €", ppPeriod: "mjesečno", ppCond: "do 12 objekata",
+        pf1: "Do 12 objekata", pf2: "Sve funkcije Starter", pf3: "Prioritetna podrška", pf4: "4 € / objekat",
         pBtn: "Izaberi PRO",
-        mp: "4 €", mpPeriod: "po objektu / mjesec", mpCond: "od 12 objekata",
-        mf1: "Najbolja cijena", mf2: "Sve funkcije Pro", mf3: "Lični menadžer",
-        mBtn: "Izaberi MAX",
+        up: "89 €", upPeriod: "mjesečno", upCond: "neograničeno",
+        uf1: "Neograničeni objekti", uf2: "Sve funkcije Pro", uf3: "Najniža cijena po objektu", uf4: "Lični menadžer",
+        uBtn: "Izaberi Unlimited",
         screensLabel: "Interfejs",
         screensTitle: "Ovako izgleda Pocket Manager",
         screensSub: "Tri glavna ekrana — kalendar, čišćenja, finansije. Sve u Telegramu.",
@@ -894,12 +925,15 @@ const T = {
         fp: "0 €", fpPeriod: "sonsuza kadar",
         ff1: "2 mülke kadar", ff2: "Tam işlevsellik", ff3: "iCal senkronizasyonu", ff4: "Temizlikçi bildirimleri",
         fBtn: "Ücretsiz başla",
-        pp: "5 €", ppPeriod: "mülk başına / ay",
-        pf1: "Sınırsız mülk", pf2: "Tüm Free özellikleri", pf3: "Öncelikli destek",
+        sp: "25 €", spPeriod: "aylık", spCond: "5 mülke kadar",
+        sf1: "5 mülke kadar", sf2: "Tüm Free özellikleri", sf3: "Sahip raporları", sf4: "Excel dışa aktarma",
+        sBtn: "Starter seç",
+        pp: "49 €", ppPeriod: "aylık", ppCond: "12 mülke kadar",
+        pf1: "12 mülke kadar", pf2: "Tüm Starter özellikleri", pf3: "Öncelikli destek", pf4: "4 € / mülk",
         pBtn: "PRO seç",
-        mp: "4 €", mpPeriod: "mülk başına / ay", mpCond: "12+ mülkten itibaren",
-        mf1: "En iyi fiyat", mf2: "Tüm Pro özellikleri", mf3: "Kişisel yönetici",
-        mBtn: "MAX seç",
+        up: "89 €", upPeriod: "aylık", upCond: "sınırsız",
+        uf1: "Sınırsız mülk", uf2: "Tüm Pro özellikleri", uf3: "Mülk başına en düşük maliyet", uf4: "Kişisel yönetici",
+        uBtn: "Unlimited seç",
         screensLabel: "Arayüz",
         screensTitle: "Pocket Manager böyle görünür",
         screensSub: "Üç ana ekran — takvim, temizlikler, finans. Hepsi Telegram'da.",
