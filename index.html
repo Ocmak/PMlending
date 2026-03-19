@@ -33,6 +33,7 @@
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             color: var(--navy);
+            overflow-x: hidden;
             background: var(--white);
             -webkit-font-smoothing: antialiased;
             overflow-x: hidden;
@@ -76,6 +77,11 @@
             box-shadow: var(--shadow-sm);
         }
         .lang-btn:not(.active):hover { background: var(--border); color: var(--navy); }
+        @media (max-width: 480px) {
+            .lang-btn { padding: 6px 8px; }
+            .lang-btn .lang-label { display: none; }
+            .lang-btn .flag { font-size: 18px; }
+        }
         .header-cta {
             display: inline-flex; align-items: center; gap: 8px;
             padding: 9px 18px; background: var(--blue); color: white;
@@ -380,10 +386,10 @@
                 <span class="logo-text">Pocket Manager</span>
             </a>
             <div class="lang-switcher">
-                <button class="lang-btn active" id="lang-ru"  onclick="setLang('ru')"><span class="flag">🇷🇺</span> RU</button>
-                <button class="lang-btn"        id="lang-en"  onclick="setLang('en')"><span class="flag">🇬🇧</span> EN</button>
-                <button class="lang-btn"        id="lang-cnr" onclick="setLang('cnr')"><span class="flag">🇲🇪</span> CNR</button>
-                <button class="lang-btn"        id="lang-tr"  onclick="setLang('tr')"><span class="flag">🇹🇷</span> TR</button>
+                <button class="lang-btn active" id="lang-ru"  onclick="setLang('ru')"><span class="flag">🇷🇺</span><span class="lang-label"> RU</span></button>
+                <button class="lang-btn"        id="lang-en"  onclick="setLang('en')"><span class="flag">🇬🇧</span><span class="lang-label"> EN</span></button>
+                <button class="lang-btn"        id="lang-cnr" onclick="setLang('cnr')"><span class="flag">🇲🇪</span><span class="lang-label"> CNR</span></button>
+                <button class="lang-btn"        id="lang-tr"  onclick="setLang('tr')"><span class="flag">🇹🇷</span><span class="lang-label"> TR</span></button>
             </div>
             <a href="https://t.me/Pocket_managerbot" target="_blank" class="header-cta">
                 <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.474c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.873.747z"/></svg>
